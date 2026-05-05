@@ -94,16 +94,19 @@
       overflow: hidden;
     }
 
-    /* Grid texture */
+    /* Architectural diagonal hatching */
     .hero::before {
       content: '';
       position: absolute;
       inset: 0;
-      background-image:
-        linear-gradient(rgba(245,158,11,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(245,158,11,0.04) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(245,158,11,0.03) 40px,
+        rgba(245,158,11,0.03) 41px
+      );
+      mask-image: radial-gradient(ellipse 70% 90% at 80% 40%, black 20%, transparent 75%);
     }
 
     /* Glow blob */
@@ -480,25 +483,38 @@
     #other-projects { background: var(--bg-raised); padding: 5rem 4rem; }
 
     .other-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      display: flex;
+      flex-direction: column;
       gap: 1px;
       background: var(--border);
       border: 1.5px solid var(--border);
       border-radius: 10px;
       overflow: hidden;
     }
+    .other-row {
+      display: grid;
+      gap: 1px;
+      background: var(--border);
+    }
+    .other-row.row-top { grid-template-columns: repeat(2, 1fr); }
+    .other-row.row-bottom { grid-template-columns: repeat(4, 1fr); }
     .other-card {
       background: var(--bg-card);
       padding: 1.75rem;
       transition: background 0.2s;
     }
     .other-card:hover { background: #2a2318; }
+    .other-card.elevated { padding: 2rem; }
     .other-card-name {
       font-size: 0.9rem;
       font-weight: 600;
       color: var(--ink);
       margin-bottom: 0.25rem;
+    }
+    .other-card.elevated .other-card-name {
+      font-family: var(--font-d);
+      font-size: 1.2rem;
+      letter-spacing: -0.01em;
     }
     .other-card-name a:hover { color: var(--accent); }
     .other-card-meta {
@@ -514,10 +530,34 @@
       color: var(--muted);
       line-height: 1.6;
     }
+    .other-card.elevated .other-card-desc { font-size: 0.82rem; }
 
     /* ── Skills ──────────────────────────────────────── */
     #skills { background: var(--bg); }
 
+    .skills-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      max-width: 800px;
+    }
+    .skill-tag {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.35rem 0.8rem;
+      transition: all 0.15s;
+    }
+    .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
+    .skill-tag.primary {
+      color: var(--ink);
+      background: var(--bg-raised);
+      border-color: rgba(245,158,11,0.3);
+      font-weight: 600;
+    }
     .skills-groups {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -625,7 +665,8 @@
       .proj-card.featured { grid-row: span 1; }
       .exp-timeline { grid-template-columns: 120px 1fr; }
       .skills-groups { grid-template-columns: repeat(2, 1fr); }
-      .other-grid { grid-template-columns: 1fr; }
+      .other-row.row-top { grid-template-columns: 1fr; }
+      .other-row.row-bottom { grid-template-columns: repeat(2, 1fr); }
       .hero-stats { gap: 2rem; }
     }
   </style>
@@ -746,7 +787,7 @@
           <div class="proj-title">Workshop XR</div>
           <div class="proj-sub">Enterprise VR for AEC design review</div>
           <p class="proj-desc">
-            Autodesk's flagship immersive workspace — streams complex BIM models from Autodesk Forma to Meta Quest in real time, serving <strong>1,600+ MAU</strong> across enterprise AEC teams. I designed and built a multi-level LOD system with depth-based occlusion culling that enabled <strong>2–3× more geometry</strong> to render on constrained VR hardware.
+            Autodesk's flagship immersive workspace — streams complex BIM models from Autodesk Forma to Meta Quest in real time. I designed and built the multi-level LOD system with depth-based occlusion culling that makes it possible.
           </p>
           <div class="proj-pills">
             <span class="pill">C++</span>
@@ -756,7 +797,17 @@
             <span class="pill">Occlusion Culling</span>
             <span class="pill">Jenkins</span>
           </div>
-          <a href="https://www.autodesk.com/products/workshop-xr/overview" class="proj-link" style="margin-top:1rem; display:inline-flex;">
+          <div class="proj-stat">
+            <div>
+              <div class="proj-stat-val">2–3<em>×</em></div>
+              <div class="proj-stat-label">More geometry rendered</div>
+            </div>
+            <div>
+              <div class="proj-stat-val"><em>∞</em></div>
+              <div class="proj-stat-label">Enterprise AEC teams globally</div>
+            </div>
+          </div>
+          <a href="https://www.autodesk.com/products/workshop-xr/overview" class="proj-link" style="margin-top:1.25rem; display:inline-flex;">
             autodesk.com/workshop-xr
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
           </a>
@@ -794,40 +845,44 @@
       <div class="section-label reveal">More Work</div>
       <div class="other-grid reveal">
 
-        <div class="other-card">
-          <div class="other-card-name"><a href="https://apps.apple.com/ca/app/archwiz/id6757251966">ArchWiz iOS</a></div>
-          <div class="other-card-meta">Expo · App Store · Live</div>
-          <div class="other-card-desc">AI architectural visualisation on mobile. 8.21% App Store conversion rate vs ~3% industry avg. MRR growing +2,100% MoM.</div>
+        <div class="other-row row-top">
+          <div class="other-card elevated">
+            <div class="other-card-name"><a href="https://nkli.net/nigiri">NIGIRI</a></div>
+            <div class="other-card-meta">C# · HLSL · Unity · Open Source · 2020–2021</div>
+            <div class="other-card-desc">Real-time global illumination plugin for Unity — Monte-Carlo cone tracing over sparse voxel octrees for diffuse, specular, and shadow lighting. Baked and real-time voxelisation, volumetric lighting, VR single-pass stereo. Co-built remotely with graphics researcher Abigail Hocking during COVID.</div>
+          </div>
+
+          <div class="other-card elevated">
+            <div class="other-card-name"><a href="https://web.archive.org/web/20230806003035/https://tenebrislab.com/product/lux-walker/">Lux Walker</a></div>
+            <div class="other-card-meta">Unity · C# · Photon · Tenebris Lab · 2016–2020</div>
+            <div class="other-card-desc">Multi-user VR architectural design review tool — the product that led to $500K in seed funding from SAOTA, South Africa's largest architecture firm. Built with a team of 5 engineers. The commercial predecessor to Autodesk Workshop XR.</div>
+          </div>
         </div>
 
-        <div class="other-card">
-          <div class="other-card-name"><a href="https://apps.apple.com/ph/app/pinch-ai-chat-assistant/id6759166909">Pinch</a></div>
-          <div class="other-card-meta">Swift · SwiftUI · MCP · App Store</div>
-          <div class="other-card-desc">Consumer AI assistant platform. Natural-language Service Builder — describe a tool, an agent writes the API glue. MCP server support built in.</div>
-        </div>
+        <div class="other-row row-bottom">
+          <div class="other-card">
+            <div class="other-card-name"><a href="https://apps.apple.com/ca/app/archwiz/id6757251966">ArchWiz iOS</a></div>
+            <div class="other-card-meta">Expo · App Store · 2025</div>
+            <div class="other-card-desc">AI architectural visualisation on mobile. 8.21% App Store conversion vs ~3% industry avg. MRR +2,100% MoM.</div>
+          </div>
 
-        <div class="other-card">
-          <div class="other-card-name"><a href="https://nkli.net/nigiri">NIGIRI</a></div>
-          <div class="other-card-meta">C# · HLSL · Unity · Open Source</div>
-          <div class="other-card-desc">Real-time global illumination plugin for Unity. Monte-Carlo cone tracing over sparse voxel octrees. Co-built with graphics researcher Abigail Hocking.</div>
-        </div>
+          <div class="other-card">
+            <div class="other-card-name"><a href="https://apps.apple.com/ph/app/pinch-ai-chat-assistant/id6759166909">Pinch</a></div>
+            <div class="other-card-meta">Swift · SwiftUI · MCP · App Store · 2025</div>
+            <div class="other-card-desc">Consumer AI assistant. Natural-language Service Builder — describe a tool, an agent writes and tests the API. MCP support built in.</div>
+          </div>
 
-        <div class="other-card">
-          <div class="other-card-name"><a href="https://luxwalker.com/">Lux Walker</a></div>
-          <div class="other-card-meta">Unity · C# · Photon · Tenebris Lab</div>
-          <div class="other-card-desc">Multi-user VR architectural design review. Raised $500K seed from SAOTA. Team of 5 engineers.</div>
-        </div>
+          <div class="other-card">
+            <div class="other-card-name"><a href="https://apps.apple.com/ca/app/pantrysage/id6752038937">Pantry Sage</a></div>
+            <div class="other-card-meta">Expo · App Store · 2025</div>
+            <div class="other-card-desc">AI recipe and meal planning. Structured JSON responses, image generation, and local mobile databases.</div>
+          </div>
 
-        <div class="other-card">
-          <div class="other-card-name">Pantry Sage</div>
-          <div class="other-card-meta">Expo · Structured AI output</div>
-          <div class="other-card-desc">AI recipe and meal planning app. Built to explore structured JSON responses, image generation, and local mobile databases.</div>
-        </div>
-
-        <div class="other-card">
-          <div class="other-card-name"><a href="https://tenebrislab.github.io/livenormal/">Live Normal</a></div>
-          <div class="other-card-meta">Mobile · HLSL · AWS</div>
-          <div class="other-card-desc">Generate tileable PBR texture maps from camera images. HLSL shader conversion, Google Drive integration, AWS storage.</div>
+          <div class="other-card">
+            <div class="other-card-name"><a href="https://tenebrislab.github.io/livenormal/">Live Normal</a></div>
+            <div class="other-card-meta">Mobile · HLSL · AWS</div>
+            <div class="other-card-desc">Generate tileable PBR texture maps from camera images. HLSL shader conversion, Google Drive integration, AWS storage.</div>
+          </div>
         </div>
 
       </div>
@@ -853,7 +908,7 @@
             <ul class="exp-bullets-list">
               <li>Core team on <strong>Workshop XR</strong> — enterprise VR for AEC teams, streaming BIM from Autodesk Forma to Meta Quest.</li>
               <li>Designed and implemented a <strong>multi-LOD system with depth-based occlusion culling</strong> in C++ / Unreal — enabling <strong>2–3× more geometry</strong> on Meta Quest hardware.</li>
-              <li>Product serves <strong>1,600+ MAU</strong>. Highest PR contribution rate on the project; sets technical direction for the Core Team within a 20-person squad.</li>
+              <li>Highest PR contribution rate on the project; sets technical direction for the Core Team within a 20-person squad.</li>
               <li>Retained post-acquisition of The Wild.</li>
             </ul>
           </div>
@@ -937,52 +992,33 @@
     <div class="section-inner">
       <div class="section-label reveal">Capabilities</div>
       <h2 class="section-heading reveal">Built across the <em>full stack</em>.</h2>
-
-      <div class="skills-groups reveal">
-        <div>
-          <div class="skill-group-label">Languages</div>
-          <ul class="skill-items">
-            <li>TypeScript / JavaScript</li>
-            <li>C++ (Unreal Engine)</li>
-            <li>C# (Unity)</li>
-            <li>Swift / SwiftUI</li>
-            <li>Python</li>
-            <li>HLSL / GLSL</li>
-          </ul>
-        </div>
-        <div>
-          <div class="skill-group-label">Frameworks & Platforms</div>
-          <ul class="skill-items">
-            <li>React, Next.js, Electron</li>
-            <li>React Native / Expo</li>
-            <li>Unreal Engine 5</li>
-            <li>Unity3D</li>
-            <li>React Flow / xyflow</li>
-            <li>CodeMirror 6</li>
-          </ul>
-        </div>
-        <div>
-          <div class="skill-group-label">AI & Agent Systems</div>
-          <ul class="skill-items">
-            <li>Model Context Protocol</li>
-            <li>Vercel AI SDK</li>
-            <li>Google Gemini</li>
-            <li>Anthropic / Claude</li>
-            <li>CoreML (on-device)</li>
-            <li>Structured JSON output</li>
-          </ul>
-        </div>
-        <div>
-          <div class="skill-group-label">Infrastructure</div>
-          <ul class="skill-items">
-            <li>SQLite, Supabase</li>
-            <li>GitHub Actions</li>
-            <li>Jenkins (CI/CD)</li>
-            <li>Apple App Store</li>
-            <li>Meta Store</li>
-            <li>esbuild, Vitest</li>
-          </ul>
-        </div>
+      <div class="skills-cloud reveal">
+        <span class="skill-tag primary">TypeScript</span>
+        <span class="skill-tag primary">C++</span>
+        <span class="skill-tag primary">C#</span>
+        <span class="skill-tag primary">React</span>
+        <span class="skill-tag primary">Unreal Engine 5</span>
+        <span class="skill-tag primary">Model Context Protocol</span>
+        <span class="skill-tag">Swift / SwiftUI</span>
+        <span class="skill-tag">Next.js</span>
+        <span class="skill-tag">Electron</span>
+        <span class="skill-tag">React Native / Expo</span>
+        <span class="skill-tag">Unity3D</span>
+        <span class="skill-tag">HLSL / GLSL</span>
+        <span class="skill-tag">Vercel AI SDK</span>
+        <span class="skill-tag">Google Gemini</span>
+        <span class="skill-tag">Anthropic / Claude</span>
+        <span class="skill-tag">CoreML</span>
+        <span class="skill-tag">React Flow</span>
+        <span class="skill-tag">SQLite</span>
+        <span class="skill-tag">Supabase</span>
+        <span class="skill-tag">GitHub Actions</span>
+        <span class="skill-tag">Jenkins</span>
+        <span class="skill-tag">CodeMirror 6</span>
+        <span class="skill-tag">D3</span>
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">esbuild</span>
+        <span class="skill-tag">xterm.js</span>
       </div>
     </div>
   </section>
@@ -990,8 +1026,8 @@
   <!-- Connect -->
   <section id="connect">
     <div class="section-inner">
-      <h2 class="connect-heading reveal">Let's <em>build</em> something.</h2>
-      <p class="connect-sub reveal">Open to Principal Engineer and Engineering Manager roles at AI companies. Based in Toronto. Open to relocation.</p>
+      <h2 class="connect-heading reveal">I'm looking for my<br><em>next hard problem.</em></h2>
+      <p class="connect-sub reveal">Principal Engineer or Engineering Manager at an AI company. I bring 10 years of shipping — from rendering pipelines to agent systems — and I work fast. Toronto-based, open to relocation.</p>
       <div class="connect-links reveal">
         <a href="mailto:ddutchie@gmail.com" class="btn-primary">ddutchie@gmail.com</a>
         <a href="https://linkedin.com/in/gerard-slee-m-arch-a6442584" class="btn-secondary">LinkedIn</a>
