@@ -322,11 +322,24 @@
 
     /* ── One-page mode ───────────────────────────────────────── */
     body.one-page #page2 { display: none; }
+    body.one-page #cairn-note { display: none; }
     body.one-page .page { min-height: unset; }
     body.one-page .exp-item.trim { display: none; }
     body.one-page .trim-text { display: none; }
     body.one-page .summary-text { display: none; }
     body.one-page .section.proj-section { display: none; }
+
+    /* ── Cairn footnote ─────────────────────────────────────── */
+    .cairn-footnote {
+      text-align: center;
+      font-size: 0.6rem;
+      color: var(--ink-faint);
+      font-style: italic;
+      margin-top: 6mm;
+      padding-top: 3mm;
+      border-top: 1px solid var(--rule);
+    }
+    .cairn-footnote a { color: var(--accent); text-decoration: none; }
 
     /* ── Print ───────────────────────────────────────────────── */
     @media print {
@@ -659,6 +672,13 @@
 
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Cairn footnote — appears on last page -->
+  <div class="page" id="cairn-note" style="min-height:unset; padding: 6mm 14mm;">
+    <div class="cairn-footnote">
+      This resume was planned, researched, and written using <a href="https://github.com/ddutchie/cairn">Cairn</a> — with an AI agent connected live via MCP server. The tool that manages the work also built the portfolio.
     </div>
   </div>
 
