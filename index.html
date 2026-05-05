@@ -1,281 +1,1029 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerard Slee | Architect, Unity C# and Shader Developer</title>
-  <meta name="description" content="Architect turned VR Developer in Cape Town.">
+  <title>Gerard Slee — Principal Engineer & AI Builder</title>
+  <meta name="description" content="Principal Software Engineer at Autodesk. Building AI-native developer tools, agent systems, and spatial computing products.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="index.css">
-</head>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #0f172a;
+      --bg-raised: #131f35;
+      --bg-card:   #1a2740;
+      --border:    #1e3a5f;
+      --ink:       #f1f5f9;
+      --muted:     #7c93b0;
+      --faint:     #3a5068;
+      --accent:    #38bdf8;
+      --accent2:   #818cf8;
+      --font-d:    'DM Serif Display', Georgia, serif;
+      --font-b:    'DM Sans', system-ui, sans-serif;
+    }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Nav ─────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 4rem;
+      background: rgba(15,23,42,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(56,189,248,0.08);
+    }
+    .nav-logo {
+      font-family: var(--font-d);
+      font-size: 1.1rem;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .nav-logo em { font-style: italic; color: var(--accent); }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+      padding: 0.4rem 1rem;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .nav-cta:hover { background: var(--accent); color: var(--bg); }
+
+    /* ── Hero ────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 4rem 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Grid texture */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(56,189,248,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56,189,248,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+    }
+
+    /* Glow blob */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 10%; right: -10%;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(56,189,248,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .hero-portrait {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center 20%;
+      border: 3px solid rgba(56,189,248,0.4);
+      box-shadow: 0 0 0 6px rgba(56,189,248,0.07), 0 8px 32px rgba(0,0,0,0.4);
+      flex-shrink: 0;
+    }
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px; height: 1px;
+      background: var(--accent);
+    }
+
+    .hero-name {
+      font-family: var(--font-d);
+      font-size: clamp(3.5rem, 8vw, 6.5rem);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-tagline {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--muted);
+      font-weight: 300;
+      max-width: 580px;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+    .hero-tagline strong { color: var(--ink); font-weight: 500; }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: #0ea5e9; transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 4rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .stat-num {
+      font-family: var(--font-d);
+      font-size: 2rem;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .stat-num em { font-style: italic; color: var(--accent); }
+    .stat-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    /* ── Section scaffolding ─────────────────────────── */
+    section { padding: 6rem 4rem; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 24px; height: 1px;
+      background: var(--accent);
+    }
+
+    .section-heading {
+      font-family: var(--font-d);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 3.5rem;
+      max-width: 520px;
+    }
+    .section-heading em { font-style: italic; color: var(--accent); }
+
+    /* ── Featured Projects ───────────────────────────── */
+    #projects { background: var(--bg-raised); }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1.5px;
+      background: var(--border);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .proj-card {
+      background: var(--bg-card);
+      padding: 2.5rem;
+      transition: background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .proj-card:hover { background: #1e304d; }
+
+    /* Cairn spans full left column */
+    .proj-card.featured {
+      grid-row: span 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .proj-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .proj-card:hover::after { opacity: 1; }
+
+    .proj-tag {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: 3px;
+      padding: 2px 8px;
+      margin-bottom: 1.25rem;
+    }
+
+    .proj-title {
+      font-family: var(--font-d);
+      font-size: 1.8rem;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    .proj-card.featured .proj-title { font-size: 2.4rem; }
+
+    .proj-sub {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .proj-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+
+    .proj-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 1.5rem;
+    }
+    .pill {
+      font-size: 0.62rem;
+      font-weight: 500;
+      color: var(--faint);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2px 7px;
+    }
+
+    .proj-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      margin-right: 1rem;
+      transition: gap 0.15s;
+    }
+    .proj-link:hover { gap: 0.6rem; }
+    .proj-link svg { width: 12px; height: 12px; }
+
+    .proj-stat {
+      display: flex;
+      gap: 2rem;
+      margin-top: auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      margin-top: 1.5rem;
+    }
+    .proj-stat-val {
+      font-family: var(--font-d);
+      font-size: 1.4rem;
+      color: var(--ink);
+    }
+    .proj-stat-val em { font-style: italic; color: var(--accent); }
+    .proj-stat-label { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* ── Experience ──────────────────────────────────── */
+    #experience { background: var(--bg); }
+
+    .exp-timeline {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 0;
+    }
+
+    .exp-row {
+      display: contents;
+    }
+
+    .exp-date-col {
+      padding: 0 2rem 3rem 0;
+      text-align: right;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+    .exp-date-col::after {
+      content: '';
+      position: absolute;
+      right: -5px; top: 6px;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--faint);
+      transition: border-color 0.2s;
+    }
+    .exp-row:hover .exp-date-col::after { border-color: var(--accent); }
+
+    .exp-date {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--faint);
+      text-transform: uppercase;
+    }
+    .exp-co-small {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    .exp-body-col {
+      padding: 0 0 3rem 2.5rem;
+    }
+    .exp-role-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.2rem;
+    }
+    .exp-company-name {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+    .exp-bullets-list {
+      list-style: none;
+    }
+    .exp-bullets-list li {
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.65;
+      padding-left: 1em;
+      position: relative;
+      margin-bottom: 0.3rem;
+    }
+    .exp-bullets-list li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--faint);
+    }
+    .exp-bullets-list li strong { color: var(--ink); font-weight: 600; }
+
+    /* ── Other projects strip ────────────────────────── */
+    #other-projects { background: var(--bg-raised); padding: 5rem 4rem; }
+
+    .other-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .other-card {
+      background: var(--bg-card);
+      padding: 1.75rem;
+      transition: background 0.2s;
+    }
+    .other-card:hover { background: #1e304d; }
+    .other-card-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+    .other-card-name a:hover { color: var(--accent); }
+    .other-card-meta {
+      font-size: 0.65rem;
+      color: var(--accent);
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .other-card-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Skills ──────────────────────────────────────── */
+    #skills { background: var(--bg); }
+
+    .skills-groups {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+    .skill-group-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .skill-items {
+      list-style: none;
+    }
+    .skill-items li {
+      font-size: 0.82rem;
+      color: var(--muted);
+      padding: 0.2rem 0;
+    }
+
+    /* ── Connect ─────────────────────────────────────── */
+    #connect {
+      background: var(--bg-raised);
+      text-align: center;
+      padding: 7rem 4rem;
+    }
+    .connect-heading {
+      font-family: var(--font-d);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+    .connect-heading em { font-style: italic; color: var(--accent); }
+    .connect-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .connect-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── Footer ──────────────────────────────────────── */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 2rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    footer .foot-name {
+      font-family: var(--font-d);
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    footer .foot-name em { font-style: italic; color: var(--accent); }
+    footer .foot-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    footer .foot-links a {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--faint);
+      transition: color 0.2s;
+    }
+    footer .foot-links a:hover { color: var(--accent); }
+
+    /* ── Fade-in on scroll ───────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── Responsive ──────────────────────────────────── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 2rem; }
+      .nav-links { display: none; }
+      section, .hero { padding-left: 2rem; padding-right: 2rem; }
+      #other-projects { padding-left: 2rem; padding-right: 2rem; }
+      footer { padding: 1.5rem 2rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .proj-card.featured { grid-row: span 1; }
+      .exp-timeline { grid-template-columns: 120px 1fr; }
+      .skills-groups { grid-template-columns: repeat(2, 1fr); }
+      .other-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 2rem; }
+    }
+  </style>
+</head>
 <body>
 
-  <div class="container">
-    <header>
-      <img src="static/profile_gs-13c1c26aeb8dba1a6e01e7795ab2e6a1.jpg" alt="Gerard Slee" class="profile-img">
-      <div class="header-content">
-        <h1>Gerard Slee</h1>
-        <p>Principal Software Engineer, XR at Autodesk. Architect turned Developer.</p>
-        <ul class="social-links">
-          <li><a href="https://twitter.com/@GerardSlee">Twitter</a></li>
-          <li><a href="https://github.com/ddutchie">GitHub</a></li>
-          <li><a href="https://www.linkedin.com/in/gerard-slee-m-arch-a6442584/">LinkedIn</a></li>
-        </ul>
+  <!-- Nav -->
+  <nav>
+    <div class="nav-logo">Gerard <em>Slee</em></div>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#connect">Contact</a></li>
+    </ul>
+    <a href="resume.html" class="nav-cta">View Resume</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-top">
+        <img src="gs_profile.jpg" alt="Gerard Slee" class="hero-portrait">
+        <div>
+          <div class="hero-eyebrow">Principal Engineer &amp; AI Builder</div>
+          <h1 class="hero-name">Gerard<br><em>Slee</em></h1>
+        </div>
       </div>
-    </header>
+      <p class="hero-tagline">
+        Architect-turned-engineer. I founded a <strong>VR startup</strong>, raised <strong>$500K</strong>, failed, joined the competition, and got acquired by Autodesk. Now I build AI-native tools in my spare time — including a full desktop app, AI assistant, MCP server, and website <strong>in a single weekend</strong>.
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn-primary">
+          View Projects
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
+        <a href="resume.html" class="btn-secondary">
+          Resume
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
+        <a href="mailto:ddutchie@gmail.com" class="btn-secondary">Get in Touch</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">10<em>+</em></div>
+          <div class="stat-label">Years building</div>
+        </div>
+        <div>
+          <div class="stat-num"><em>$</em>500K</div>
+          <div class="stat-label">Raised as founder</div>
+        </div>
+        <div>
+          <div class="stat-num">5<em>+</em></div>
+          <div class="stat-label">Shipped products</div>
+        </div>
+        <div>
+          <div class="stat-num">8<em>%</em></div>
+          <div class="stat-label">App Store conversion</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <main>
-      <section id="about">
-        <h2>About Me</h2>
-        <div class="content-block about-text">
-          <p>Gerard Slee is a Principal Software Engineer at Autodesk, specializing in Extended Reality (XR) for AEC
-            industries. With a strong architectural background and international experience in digital transformation,
-            he bridges the gap between architecture and technology. Gerard's innovative approach in real-time
-            visualizations drives the development of cutting-edge XR solutions, shaping the future of digital design
-            interactions. His career embodies the synergy of creativity and technology.</p>
-          <p>My background is deeply rooted in Architecture, holding a Master of Architecture (M.Arch) degree. I
-            leverage this understanding of physical space to build powerful digital tools. I have 8+ years of experience
-            developing with C#, Unity, and shaders, and 5+ years running my own indie development team at Tenebris Lab.
+  <!-- Featured Projects -->
+  <section id="projects">
+    <div class="section-inner">
+      <div class="section-label reveal">Featured Work</div>
+      <h2 class="section-heading reveal">Products I've <em>built</em> and shipped.</h2>
+
+      <div class="projects-grid reveal">
+
+        <!-- Cairn — featured (left, spans 2 rows) -->
+        <div class="proj-card featured">
+          <div class="proj-tag">AI Developer Tool · Open Source</div>
+          <div class="proj-title">Cairn</div>
+          <div class="proj-sub">Local-first project management + AI assistant + MCP server</div>
+          <p class="proj-desc">
+            Entire product — desktop app, AI assistant, MCP server, and marketing website — shipped from idea to public release in a single weekend. Not a prototype; a fully featured open-source release.<br><br>
+            Cairn is a local-first workspace: Kanban board, markdown notes, node canvas (Idea Flow), knowledge graph, live dashboards, and a built-in coding agent terminal. Agents read and write the same SQLite data layer as the human user in real time. The same tool is managing this portfolio project right now.
           </p>
-          <p>Prior to my current roles, I spent a few years running a bootstrapped virtual reality startup developing
-            games and software for architects and engineers. I love integrating new technologies and optimizing
-            workflows, and I have an ability to inspire those around me.</p>
+          <div class="proj-pills">
+            <span class="pill">Electron</span>
+            <span class="pill">Next.js</span>
+            <span class="pill">TypeScript</span>
+            <span class="pill">SQLite</span>
+            <span class="pill">MCP</span>
+            <span class="pill">Vercel AI SDK</span>
+            <span class="pill">React Flow</span>
+            <span class="pill">D3</span>
+            <span class="pill">CodeMirror 6</span>
+            <span class="pill">xterm.js</span>
+          </div>
+          <div class="proj-stat">
+            <div>
+              <div class="proj-stat-val">1<em>wknd</em></div>
+              <div class="proj-stat-label">Idea to public release</div>
+            </div>
+            <div>
+              <div class="proj-stat-val">4<em>+</em></div>
+              <div class="proj-stat-label">Products shipped in one go</div>
+            </div>
+          </div>
+          <div style="margin-top:1.5rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <a href="https://github.com/ddutchie/cairn" class="proj-link">
+              GitHub
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+            <a href="https://ddutchie.github.io/cairn-site/index.html" class="proj-link">
+              Website
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+          </div>
         </div>
-      </section>
 
-      <section id="projects">
-        <h2>Projects</h2>
-        <div class="content-block grid">
-          <div class="card item">
-            <h3><a href="https://www.autodesk.com/ca-en/products/workshop-xr/overview">Autodesk Workshop XR</a></h3>
-            <p>An immersive design review workspace connected to the Autodesk Construction Cloud. Enables AEC teams to
-              collaborate in real-time, catch errors, and streamline design reviews in VR.</p>
-            <p><strong>Role:</strong> Principal Software Engineer - Contributing to the development of this flagship XR
-              product for the AEC industry.</p>
+        <!-- Workshop XR -->
+        <div class="proj-card">
+          <div class="proj-tag">Principal Engineer · Autodesk</div>
+          <div class="proj-title">Workshop XR</div>
+          <div class="proj-sub">Enterprise VR for AEC design review</div>
+          <p class="proj-desc">
+            Autodesk's flagship immersive workspace — streams complex BIM models from Autodesk Forma to Meta Quest in real time, serving <strong>1,600+ MAU</strong> across enterprise AEC teams. I designed and built a multi-level LOD system with depth-based occlusion culling that enabled <strong>2–3× more geometry</strong> to render on constrained VR hardware.
+          </p>
+          <div class="proj-pills">
+            <span class="pill">C++</span>
+            <span class="pill">Unreal Engine 5</span>
+            <span class="pill">Meta Quest</span>
+            <span class="pill">LOD Systems</span>
+            <span class="pill">Occlusion Culling</span>
+            <span class="pill">Jenkins</span>
           </div>
-          <div class="card item">
-            <h3><a href="https://www.superstardj.club/">SuperStar DJ</a></h3>
-            <p>Building a prototype VR DJing software. AI crowd simulation and reaction to music, Audio Synthesizers and
-              Mixers and Effects.</p>
-            <p><strong>Role:</strong> All Design 3D and Development of the prototype</p>
-          </div>
-          <div class="card item">
-            <h3><a href="https://luxwalker.com/">Lux Walker</a></h3>
-            <p>LUX WALKER is an interactive PC and VR application that instantly converts your 3D model into a fully
-              immersive 3D true-to-life scale model. Multiuser (Photon) world building, Runtime 3D Loading, Realtime GI
-              and Occlusion Culling.</p>
-            <p><strong>Role:</strong> Team Lead, User Experience and User Interface, Lighting and Post Effects, All
-              development (mostly C#) since 2017</p>
-          </div>
-          <div class="card item">
-            <h3><a href="https://tenebrislab.github.io/livenormal/">Live Normal</a></h3>
-            <p>Generate Tileable Texture Maps for your Games and Architectural Renderings. Mobile App, Texture
-              Conversion with HLSL shaders, Google Drive Integration, AWS Data Storage.</p>
-            <p><strong>Role:</strong> Entire Project, including design, development and deployment</p>
-          </div>
-          <div class="card item">
-            <h3><a href="https://nkli.net/nigiri">Nigiri Global Illumination</a></h3>
-            <p>SVO Realtime GI for Unity 3D - SVO Voxel and ScreenSpace GI and Reflection Pipeline.</p>
-            <p><strong>Role:</strong> Screen and Cone Tracing, Compute and Screen Space Shaders. Trace Optimizations and
-              Edge Filtering, UI for Editor</p>
-          </div>
+          <a href="https://www.autodesk.com/products/workshop-xr/overview" class="proj-link" style="margin-top:1rem; display:inline-flex;">
+            autodesk.com/workshop-xr
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
         </div>
-      </section>
 
-      <section id="games">
-        <h2>Games</h2>
-        <div class="content-block grid">
-          <div class="card item">
-            <h3><a href="https://ddutchie.itch.io/alittlefire">A Little Fire</a></h3>
-            <p>A VR Camping survival Game. A Norse Themed story with waves of enemies and simple resource management.
-            </p>
-            <p><strong>Roles:</strong> Entire Project</p>
+        <!-- ArchWiz Studio -->
+        <div class="proj-card">
+          <div class="proj-tag">AI · macOS + Windows · SaaS</div>
+          <div class="proj-title">ArchWiz Studio</div>
+          <div class="proj-sub">Node-based AI visualisation for architects</div>
+          <p class="proj-desc">
+            A Variation Canvas built on React Flow lets architects wire reference inputs — sketches, site photos, material samples — into a branching generation graph. On-device CoreML upscaling (4× via UltraSharp/RealESRGAN) keeps renders private; cloud generation via Google Gemini.
+          </p>
+          <div class="proj-pills">
+            <span class="pill">Electron</span>
+            <span class="pill">CoreML</span>
+            <span class="pill">Google Gemini</span>
+            <span class="pill">React Flow</span>
+            <span class="pill">Supabase</span>
+            <span class="pill">TypeScript</span>
           </div>
-          <div class="card item">
-            <h3><a href="https://www.youtube.com/watch?v=SyT4ghtA_xQ&lc=UgwIyLTX3pNeG1uf1-x4AaABAg">Astroid Miner VR</a>
-            </h3>
-            <p>A VR Space RPG (Oculus Quest) with marching cube mining and randomized weapons and seeded universes.
-              Procedural level and resource generations, Marching Cubes, Replacement Shaders, Inverse Kinematics.</p>
-            <p><strong>Roles:</strong> Entire Project</p>
-          </div>
-          <div class="card item">
-            <h3><a href="https://ddutchie.itch.io/neon-ninja">Neon Ninja</a></h3>
-            <p>A Neon Hack and slash adventure akin to Space Harrier. Rhythm Game with music affecting gameplay.
-              Coverflow style music browsing.</p>
-            <p><strong>Roles:</strong> Entire Project</p>
-          </div>
+          <a href="https://archwiz.studio" class="proj-link" style="margin-top:1rem; display:inline-flex;">
+            archwiz.studio
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
         </div>
-      </section>
 
-      <section id="ai-mobile">
-        <h2>Mobile Development & Agentic AI</h2>
-        <div class="content-block about-text">
-          <p>Building intelligence for every passion. I adhere to a philosophy of "Agentic AI"—creating tools that don't
-            just chat, but understand the real world and take action. My recent work focuses on React Native mobile apps
-            powered by custom AI agents.</p>
-        </div>
-        <div class="content-block grid">
-          <div class="card item">
-            <h3><a href="https://ddutchie.github.io/appsbygerard/index.html">ToolChat</a></h3>
-            <p><strong>Agentic AI Platform.</strong> A developer-centric platform to build and manage custom tools,
-              connect assistants to APIs, and automate complex workflows with real-time logic.</p>
-          </div>
-          <div class="card item">
-            <h3><a href="https://ddutchie.github.io/appsbygerard/index.html">HookPoint</a></h3>
-            <p><strong>AI Fishing Assistant.</strong> Uses computer vision to analyze fishing spots, identifying water
-              conditions and fish species to provide tactical recommendations.</p>
-          </div>
-          <div class="card item">
-            <h3><a href="https://ddutchie.github.io/appsbygerard/index.html">ArcWiz</a></h3>
-            <p><strong>AI Architecture Visualization.</strong> Combines intelligent conversation with image generation
-              to visualize concepts, styles, and history for architects.</p>
-          </div>
-          <div class="card item">
-            <h3><a href="https://ddutchie.github.io/appsbygerard/index.html">Penny Margin</a></h3>
-            <p><strong>AI Financial Assistant.</strong> A service-business assistant that simplifies P&L tracking and
-              forecasts profits via a chat interface.</p>
-          </div>
-          <div class="card item">
-            <h3><a href="https://ddutchie.github.io/appsbygerard/index.html">TextureCam</a></h3>
-            <p><strong>Utility.</strong> Instantly converts camera images into PBR (Physically Based Rendering)
-              materials for 3D models.</p>
-          </div>
-        </div>
-        <div class="content-block" style="margin-top: 1.5rem;">
-          <a href="https://ddutchie.github.io/appsbygerard/index.html"
-            style="color: var(--accent-color); font-weight: 600; text-decoration: none;">View dedicated portfolio: Apps
-            By Gerard &rarr;</a>
-        </div>
-      </section>
+      </div>
+    </div>
+  </section>
 
-      <section id="experience">
-        <h2>Experience</h2>
-        <div class="content-block">
-          <div class="item">
-            <h3><a href="https://autodesk.com/">Autodesk</a></h3>
-            <div class="item-meta">Principal Software Engineer, XR, April 2022 - Present</div>
-            <p>Joined via the acquisition of The Wild. Focusing on the future of XR in the AEC industry.</p>
-          </div>
-          <div class="item">
-            <h3><a href="https://thewild.com/">The Wild</a></h3>
-            <div class="item-meta">Senior XR Engineer, November 2021 - April 2022</div>
-            <p>Acquired by Autodesk.</p>
-          </div>
-          <div class="item">
-            <h3>Realism Labs</h3>
-            <div class="item-meta">CTO & Lead Developer, January 2020 - November 2021</div>
-          </div>
-          <div class="item">
-            <h3><a href="https://tenebrislab.com/">Tenebris Lab</a></h3>
-            <div class="item-meta">Founder & Managing Director, Jan 2016 - December 2020</div>
-          </div>
-          <div class="item">
-            <h3><a href="https://ixperience.co/">IXPERIENCE</a></h3>
-            <div class="item-meta">Head Teacher VR Course, Jan 2017 - December 2018</div>
-          </div>
-          <div class="item">
-            <h3><a href="https://youtu.be/OltLhNA3AJc">SAOTA VR</a></h3>
-            <p>Built a green room and prototyped some VR games and apps with a bunch of interns with the goal of
-              researching early stages of VR User Experience and Interaction design.</p>
-          </div>
-          <div class="item">
-            <h3><a href="https://saota.com/">SAOTA</a></h3>
-            <div class="item-meta">Candidate Architect, Jan 2015 - Jan 2016</div>
-            <p>3D Design and Modeling, Realtime Architecture Walk Throughs.</p>
-          </div>
-          <div class="item">
-            <h3>GMP Architekten - Berlin</h3>
-            <div class="item-meta">Candidate Architect, Jan 2010 - Jan 2012</div>
-            <p>Design, Rapid 3D Prototyping and Architecture Visualization.</p>
-          </div>
-        </div>
-      </section>
+  <!-- Other Projects -->
+  <section id="other-projects">
+    <div class="section-inner">
+      <div class="section-label reveal">More Work</div>
+      <div class="other-grid reveal">
 
-      <section id="skills">
-        <h2>Skills</h2>
-        <div class="content-block grid">
-          <div class="item">
-            <h3>Core Engineering</h3>
-            <p>C#, C++, TypeScript, Python, HLSL/GLSL, Compute Shaders</p>
-          </div>
-          <div class="item">
-            <h3>Platforms & Engines</h3>
-            <p>Unity, Unreal Engine 5, React Native, Expo</p>
-          </div>
-          <div class="item">
-            <h3>Specializations</h3>
-            <p>Agentic AI, Computer Vision, Multiplayer Networking (Photon/Mirror), Procedural Generation, VR/AR
-              Interaction Design</p>
-          </div>
-          <div class="item">
-            <h3>3D & Design</h3>
-            <p>Architectural Design (M.Arch), Blender, SketchUp, UI/UX Design</p>
-          </div>
-          <div class="item">
-            <h3>Cloud & Tools</h3>
-            <p>Amazon Web Services (AWS), Git, Plastic SCM, CI/CD</p>
-          </div>
-          <div class="item">
-            <h3>Hobbies</h3>
-            <p>Drone Photography, Photogrammetry, Gamejamming, Hiking, Snowboarding</p>
-          </div>
-          <div class="item">
-            <h3>Soft Skills</h3>
-            <p>Creative, Kind, Leadership, Intuitive, Observant, Driven</p>
-          </div>
+        <div class="other-card">
+          <div class="other-card-name"><a href="https://apps.apple.com/ca/app/archwiz/id6757251966">ArchWiz iOS</a></div>
+          <div class="other-card-meta">Expo · App Store · Live</div>
+          <div class="other-card-desc">AI architectural visualisation on mobile. 8.21% App Store conversion rate vs ~3% industry avg. MRR growing +2,100% MoM.</div>
         </div>
-      </section>
 
-      <section id="education">
-        <h2>Education</h2>
-        <div class="content-block">
-          <div class="item">
-            <h3>University of the Free State</h3>
-            <p>Masters of Architectural Studies (Professional) - 2014</p>
-          </div>
-          <div class="item">
-            <h3>University of the Free State</h3>
-            <p>Bachelor of Architectural Studies (Honours) - 2013</p>
-          </div>
-          <div class="item">
-            <h3>University of Cape Town</h3>
-            <p>Bachelor of Architectural Studies - 2008-2010</p>
-          </div>
+        <div class="other-card">
+          <div class="other-card-name"><a href="https://apps.apple.com/ph/app/pinch-ai-chat-assistant/id6759166909">Pinch</a></div>
+          <div class="other-card-meta">Swift · SwiftUI · MCP · App Store</div>
+          <div class="other-card-desc">Consumer AI assistant platform. Natural-language Service Builder — describe a tool, an agent writes the API glue. MCP server support built in.</div>
         </div>
-      </section>
 
-      <section id="about-more">
-        <h2>About Me (Continued)</h2>
-        <div class="content-block about-text">
-          <p>I have been heavily focused on Virtual Reality and Augmented Reality using any tools and languages
-            available to me. I love exploring new technologies. I am constantly creating prototypes of ideas and
-            integrating APIs in creative ways. My Architecture background means that I have an ability to take concepts
-            through to completed products using a design orientated approach. I am very fluent in gameplay programming
-            with C#, shader and graphics programming, UX design as well as management of a team. Being a board member
-            and founder of my start-up means I know how to deal with stress and how to translate instructions and
-            progress between all parties involved with a business.</p>
-          <p>I have taken concepts from design phase through deployment on multiple platforms. I am an early adopter of
-            technology and love to explore software development, constantly on the hunt for new tools and Human
-            Interface devices that bridge the gap between design and technology.</p>
+        <div class="other-card">
+          <div class="other-card-name"><a href="https://nkli.net/nigiri">NIGIRI</a></div>
+          <div class="other-card-meta">C# · HLSL · Unity · Open Source</div>
+          <div class="other-card-desc">Real-time global illumination plugin for Unity. Monte-Carlo cone tracing over sparse voxel octrees. Co-built with graphics researcher Abigail Hocking.</div>
         </div>
-      </section>
-      <section id="connect">
-        <h2>Let's Build the Future</h2>
-        <div class="content-block">
-          <p>I am always looking to connect with people who want to drive change, alter the digital landscape, and make
-            awesome XR Solutions.</p>
-          <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-            <a href="mailto:ddutchie@gmail.com" class="cta-button">Get in Touch</a>
-            <a href="GERARDUS SILVESTER SLEE.pdf" class="cta-button outline">Download Resume</a>
+
+        <div class="other-card">
+          <div class="other-card-name"><a href="https://luxwalker.com/">Lux Walker</a></div>
+          <div class="other-card-meta">Unity · C# · Photon · Tenebris Lab</div>
+          <div class="other-card-desc">Multi-user VR architectural design review. Raised $500K seed from SAOTA. Team of 5 engineers.</div>
+        </div>
+
+        <div class="other-card">
+          <div class="other-card-name">Pantry Sage</div>
+          <div class="other-card-meta">Expo · Structured AI output</div>
+          <div class="other-card-desc">AI recipe and meal planning app. Built to explore structured JSON responses, image generation, and local mobile databases.</div>
+        </div>
+
+        <div class="other-card">
+          <div class="other-card-name"><a href="https://tenebrislab.github.io/livenormal/">Live Normal</a></div>
+          <div class="other-card-meta">Mobile · HLSL · AWS</div>
+          <div class="other-card-desc">Generate tileable PBR texture maps from camera images. HLSL shader conversion, Google Drive integration, AWS storage.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section id="experience">
+    <div class="section-inner">
+      <div class="section-label reveal">Experience</div>
+      <h2 class="section-heading reveal">A decade of <em>building</em> at the frontier.</h2>
+
+      <div class="exp-timeline reveal">
+
+        <div class="exp-row">
+          <div class="exp-date-col">
+            <div class="exp-date">2022 — Now</div>
+            <div class="exp-co-small">Toronto</div>
+          </div>
+          <div class="exp-body-col">
+            <div class="exp-role-title">Principal Software Engineer</div>
+            <div class="exp-company-name">Autodesk — Workshop XR</div>
+            <ul class="exp-bullets-list">
+              <li>Core team on <strong>Workshop XR</strong> — enterprise VR for AEC teams, streaming BIM from Autodesk Forma to Meta Quest.</li>
+              <li>Designed and implemented a <strong>multi-LOD system with depth-based occlusion culling</strong> in C++ / Unreal — enabling <strong>2–3× more geometry</strong> on Meta Quest hardware.</li>
+              <li>Product serves <strong>1,600+ MAU</strong>. Highest PR contribution rate on the project; sets technical direction for the Core Team within a 20-person squad.</li>
+              <li>Retained post-acquisition of The Wild.</li>
+            </ul>
           </div>
         </div>
-      </section>
-    </main>
-  </div>
+
+        <div class="exp-row">
+          <div class="exp-date-col">
+            <div class="exp-date">2021 — 2022</div>
+          </div>
+          <div class="exp-body-col">
+            <div class="exp-role-title">Senior XR Engineer</div>
+            <div class="exp-company-name">The Wild <span style="color:var(--faint);font-weight:400;font-size:0.78rem">(acq. Autodesk)</span></div>
+            <ul class="exp-bullets-list">
+              <li>Multi-user VR design review platform for AEC. Acquired by Autodesk April 2022.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="exp-row">
+          <div class="exp-date-col">
+            <div class="exp-date">2016 — 2020</div>
+            <div class="exp-co-small">Cape Town</div>
+          </div>
+          <div class="exp-body-col">
+            <div class="exp-role-title">Founder &amp; Managing Director</div>
+            <div class="exp-company-name">Tenebris Lab</div>
+            <ul class="exp-bullets-list">
+              <li>Founded VR studio; built <strong>Lux Walker</strong> — multi-user architectural design review (Unity, C#, Photon).</li>
+              <li>Raised <strong>$500K seed</strong> from SAOTA, the largest architecture firm in Cape Town, who became founding partners after piloting the product.</li>
+              <li>Led a team of 5 engineers through full product development and deployment.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="exp-row">
+          <div class="exp-date-col">
+            <div class="exp-date">2017 — 2018</div>
+          </div>
+          <div class="exp-body-col">
+            <div class="exp-role-title">VR Course Instructor</div>
+            <div class="exp-company-name">iXperience</div>
+            <ul class="exp-bullets-list">
+              <li>Designed and taught a 4-week intensive VR development course for US university students in Cape Town.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="exp-row">
+          <div class="exp-date-col">
+            <div class="exp-date">2015 — 2016</div>
+          </div>
+          <div class="exp-body-col">
+            <div class="exp-role-title">Head of Visualisation</div>
+            <div class="exp-company-name">SAOTA Architects</div>
+            <ul class="exp-bullets-list">
+              <li>Led real-time 3D visualisation at one of South Africa's most prominent architecture firms — the same firm that later invested in Tenebris Lab.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="exp-row">
+          <div class="exp-date-col">
+            <div class="exp-date">2010 — 2012</div>
+            <div class="exp-co-small">Berlin</div>
+          </div>
+          <div class="exp-body-col">
+            <div class="exp-role-title">Junior Architect</div>
+            <div class="exp-company-name">GMP Architekten</div>
+            <ul class="exp-bullets-list">
+              <li>Design, rapid 3D prototyping, and visualisation at one of Europe's largest architecture practices.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="section-inner">
+      <div class="section-label reveal">Capabilities</div>
+      <h2 class="section-heading reveal">Built across the <em>full stack</em>.</h2>
+
+      <div class="skills-groups reveal">
+        <div>
+          <div class="skill-group-label">Languages</div>
+          <ul class="skill-items">
+            <li>TypeScript / JavaScript</li>
+            <li>C++ (Unreal Engine)</li>
+            <li>C# (Unity)</li>
+            <li>Swift / SwiftUI</li>
+            <li>Python</li>
+            <li>HLSL / GLSL</li>
+          </ul>
+        </div>
+        <div>
+          <div class="skill-group-label">Frameworks & Platforms</div>
+          <ul class="skill-items">
+            <li>React, Next.js, Electron</li>
+            <li>React Native / Expo</li>
+            <li>Unreal Engine 5</li>
+            <li>Unity3D</li>
+            <li>React Flow / xyflow</li>
+            <li>CodeMirror 6</li>
+          </ul>
+        </div>
+        <div>
+          <div class="skill-group-label">AI & Agent Systems</div>
+          <ul class="skill-items">
+            <li>Model Context Protocol</li>
+            <li>Vercel AI SDK</li>
+            <li>Google Gemini</li>
+            <li>Anthropic / Claude</li>
+            <li>CoreML (on-device)</li>
+            <li>Structured JSON output</li>
+          </ul>
+        </div>
+        <div>
+          <div class="skill-group-label">Infrastructure</div>
+          <ul class="skill-items">
+            <li>SQLite, Supabase</li>
+            <li>GitHub Actions</li>
+            <li>Jenkins (CI/CD)</li>
+            <li>Apple App Store</li>
+            <li>Meta Store</li>
+            <li>esbuild, Vitest</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Connect -->
+  <section id="connect">
+    <div class="section-inner">
+      <h2 class="connect-heading reveal">Let's <em>build</em> something.</h2>
+      <p class="connect-sub reveal">Open to Principal Engineer and Engineering Manager roles at AI companies. Based in Toronto. Open to relocation.</p>
+      <div class="connect-links reveal">
+        <a href="mailto:ddutchie@gmail.com" class="btn-primary">ddutchie@gmail.com</a>
+        <a href="https://linkedin.com/in/gerard-slee-m-arch-a6442584" class="btn-secondary">LinkedIn</a>
+        <a href="https://github.com/ddutchie" class="btn-secondary">GitHub</a>
+        <a href="resume.html" class="btn-secondary">Resume</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="foot-name">Gerard <em>Slee</em></div>
+    <ul class="foot-links">
+      <li><a href="privacy.html">Privacy</a></li>
+      <li><a href="resume.html">Resume</a></li>
+      <li><a href="mailto:ddutchie@gmail.com">Contact</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
 </body>
-
 </html>

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerard Slee — Resume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    /* ── Variables ─────────────────────────────────────────── */
+    :root {
+      --bg: #ffffff;
+      --ink: #0f172a;
+      --ink-muted: #475569;
+      --ink-faint: #94a3b8;
+      --accent: #0284c7;
+      --rule: #e2e8f0;
+      --left-bar: #0f172a;
+      --page-w: 210mm;
+      --page-h: 297mm;
+      --pad: 14mm;
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+    }
+
+    /* ── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Screen shell ───────────────────────────────────────── */
+    body {
+      background: #f1f5f9;
+      font-family: var(--font-body);
+      color: var(--ink);
+      padding: 2rem 1rem 4rem;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ── Controls ───────────────────────────────────────────── */
+    #controls {
+      max-width: var(--page-w);
+      margin: 0 auto 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    #controls .ctrl-left { display: flex; align-items: center; gap: 0.75rem; }
+    #controls .ctrl-center { display: flex; align-items: center; gap: 0.75rem; justify-content: center; }
+    #controls .ctrl-right { display: flex; align-items: center; justify-content: flex-end; }
+    #controls span { font-size: 0.75rem; color: var(--ink-muted); font-family: var(--font-body); letter-spacing: 0.05em; text-transform: uppercase; }
+    .ctrl-btn {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+      border-radius: 4px;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .ctrl-btn:hover, .ctrl-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(2,132,199,0.05);
+    }
+    .ctrl-btn.print-btn {
+      margin-left: auto;
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .ctrl-btn.print-btn:hover { background: var(--accent); color: #fff; }
+
+    /* ── Page ───────────────────────────────────────────────── */
+    .page {
+      background: var(--bg);
+      width: var(--page-w);
+      min-height: var(--page-h);
+      margin: 0 auto 2rem;
+      padding: var(--pad) var(--pad) var(--pad) calc(var(--pad) + 4px);
+      position: relative;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+
+    /* Accent bar left */
+    .page::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 4px;
+      background: var(--left-bar);
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    .resume-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0 4mm;
+      align-items: center;
+      padding-bottom: 6mm;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 6mm;
+    }
+    .resume-portrait {
+      width: 18mm;
+      height: 18mm;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center 20%;
+      border: 1.5px solid var(--rule);
+      display: block;
+    }
+    .name {
+      font-family: var(--font-display);
+      font-size: 2.6rem;
+      line-height: 1;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .title-line {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-top: 0.4rem;
+    }
+    .contact-block {
+      text-align: right;
+      font-size: 0.72rem;
+      color: var(--ink-muted);
+      line-height: 1.8;
+    }
+    .contact-block a { color: var(--accent); text-decoration: none; }
+    .contact-block a:hover { text-decoration: underline; }
+
+    /* ── Two-column layout ──────────────────────────────────── */
+    .body-grid {
+      display: grid;
+      grid-template-columns: 1fr 2.4fr;
+      gap: 0 7mm;
+    }
+
+    /* ── Section ─────────────────────────────────────────────── */
+    .section { margin-bottom: 5mm; }
+    .section-label {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2.5mm;
+      padding-bottom: 1.5mm;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    /* ── Left column ─────────────────────────────────────────── */
+    .col-left .section { margin-bottom: 4.5mm; }
+
+    .skills-list { list-style: none; }
+    .skills-list li {
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+      padding: 1px 0;
+      line-height: 1.5;
+    }
+    .skills-list li strong {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 2mm;
+      margin-bottom: 0.5mm;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+    }
+    .tag {
+      font-size: 0.62rem;
+      font-weight: 500;
+      color: var(--ink-muted);
+      background: #f1f5f9;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      padding: 1px 5px;
+      line-height: 1.6;
+    }
+
+    .edu-item { margin-bottom: 2.5mm; }
+    .edu-item .deg {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+    .edu-item .inst {
+      font-size: 0.65rem;
+      color: var(--ink-muted);
+    }
+    .edu-item .yr {
+      font-size: 0.62rem;
+      color: var(--ink-faint);
+    }
+
+    .link-item {
+      font-size: 0.68rem;
+      margin-bottom: 1.5mm;
+    }
+    .link-item a { color: var(--accent); text-decoration: none; }
+    .link-item span { color: var(--ink-faint); display: block; font-size: 0.6rem; }
+
+    /* ── Right column — Experience ───────────────────────────── */
+    .summary-text {
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      line-height: 1.65;
+      margin-bottom: 5mm;
+      font-style: italic;
+    }
+    .summary-text strong { color: var(--ink); font-style: normal; font-weight: 600; }
+
+    .exp-item { margin-bottom: 4mm; }
+    .exp-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+    .exp-role {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+    .exp-company {
+      font-size: 0.72rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .exp-dates {
+      font-size: 0.62rem;
+      color: var(--ink-faint);
+      white-space: nowrap;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+    .exp-bullets {
+      list-style: none;
+      margin-top: 1.5mm;
+    }
+    .exp-bullets li {
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+      line-height: 1.55;
+      padding-left: 0.9em;
+      position: relative;
+      margin-bottom: 0.5mm;
+    }
+    .exp-bullets li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--ink-faint);
+    }
+    .exp-bullets li strong { color: var(--ink); font-weight: 600; }
+
+    /* Projects sidebar strip */
+    .proj-item { margin-bottom: 3mm; }
+    .proj-name {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .proj-name a { color: inherit; text-decoration: none; }
+    .proj-name a:hover { color: var(--accent); }
+    .proj-meta {
+      font-size: 0.62rem;
+      color: var(--accent);
+      margin-bottom: 0.5mm;
+    }
+    .proj-desc {
+      font-size: 0.68rem;
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Page 2 header ───────────────────────────────────────── */
+    .page2-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding-bottom: 3mm;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 5mm;
+    }
+    .page2-header .name-small {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--ink);
+    }
+    .page2-header .continued {
+      font-size: 0.65rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── One-page mode ───────────────────────────────────────── */
+    body.one-page #page2 { display: none; }
+    body.one-page .page { min-height: unset; }
+    body.one-page .exp-item.trim { display: none; }
+    body.one-page .trim-text { display: none; }
+    body.one-page .summary-text { display: none; }
+    body.one-page .section.proj-section { display: none; }
+
+    /* ── Print ───────────────────────────────────────────────── */
+    @media print {
+      body { background: white; padding: 0; }
+      #controls { display: none; }
+      .page {
+        box-shadow: none;
+        margin: 0;
+        width: 100%;
+        min-height: unset;
+      }
+      @page { size: A4; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Controls -->
+  <div id="controls">
+    <div class="ctrl-left">
+      <a href="index.html" class="ctrl-btn" style="text-decoration:none;">← Portfolio</a>
+    </div>
+    <div class="ctrl-center">
+      <span>Layout</span>
+      <button class="ctrl-btn" id="btn2" onclick="setPages(2)">2 Pages</button>
+      <button class="ctrl-btn" id="btn1" onclick="setPages(1)">1 Page</button>
+    </div>
+    <div class="ctrl-right">
+      <button class="ctrl-btn print-btn" onclick="window.print()">Print / Save PDF</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ PAGE 1 ═══════════════════════════════ -->
+  <div class="page" id="page1">
+    <header class="resume-header">
+      <img src="gs_profile.jpg" alt="Gerard Slee" class="resume-portrait">
+      <div>
+        <div class="name">Gerard <em>Slee</em></div>
+        <div class="title-line">Principal Software Engineer &nbsp;·&nbsp; AI Tooling &amp; Developer Experience</div>
+      </div>
+      <div class="contact-block">
+        Toronto, Canada &nbsp;·&nbsp; Open to relocation<br>
+        <a href="mailto:ddutchie@gmail.com">ddutchie@gmail.com</a><br>
+        <a href="https://github.com/ddutchie">github.com/ddutchie</a><br>
+        <a href="https://linkedin.com/in/gerard-slee-m-arch-a6442584">linkedin.com/in/gerard-slee</a><br>
+        <a href="https://gerardbuilds.com">gerardbuilds.com</a>
+      </div>
+    </header>
+
+    <div class="body-grid">
+      <!-- ── LEFT ── -->
+      <div class="col-left">
+
+        <div class="section">
+          <div class="section-label">Skills</div>
+          <ul class="skills-list">
+            <li><strong>Languages</strong></li>
+            <li>TypeScript &amp; JavaScript</li>
+            <li>C++ (Unreal Engine)</li>
+            <li>C# (Unity)</li>
+            <li>Swift / SwiftUI</li>
+            <li>Python</li>
+            <li>HLSL / GLSL</li>
+
+            <li><strong>Frameworks</strong></li>
+            <li>React, Next.js, Electron</li>
+            <li>React Native / Expo</li>
+            <li>Unreal Engine 5</li>
+            <li>Unity3D</li>
+
+            <li><strong>AI &amp; Agent Systems</strong></li>
+            <li>Model Context Protocol (MCP)</li>
+            <li>Vercel AI SDK</li>
+            <li>Google Gemini</li>
+            <li>Anthropic / Claude</li>
+            <li>CoreML (on-device inference)</li>
+            <li>Structured JSON output</li>
+
+            <li><strong>Data &amp; Infra</strong></li>
+            <li>SQLite, Supabase</li>
+            <li>GitHub Actions, Jenkins</li>
+            <li>Electron / node-pty / xterm.js</li>
+            <li>esbuild, Vitest, Playwright</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <div class="section-label">Education</div>
+          <div class="edu-item">
+            <div class="deg">M.Arch</div>
+            <div class="inst">University of the Free State</div>
+            <div class="yr">2013 – 2014</div>
+          </div>
+          <div class="edu-item">
+            <div class="deg">B.Arch</div>
+            <div class="inst">University of Cape Town</div>
+            <div class="yr">2008 – 2010</div>
+          </div>
+          <div class="edu-item" style="margin-top:2mm">
+            <div class="inst" style="color:var(--ink-faint);font-size:0.62rem">Software: entirely self-taught</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-label">Links</div>
+          <div class="link-item">
+            <a href="https://github.com/ddutchie/cairn">github.com/ddutchie/cairn</a>
+            <span>Cairn — open source</span>
+          </div>
+          <div class="link-item">
+            <a href="https://archwiz.studio">archwiz.studio</a>
+            <span>ArchWiz Studio</span>
+          </div>
+          <div class="link-item">
+            <a href="https://apps.apple.com/ca/app/archwiz/id6757251966">App Store — ArchWiz</a>
+            <span>iOS — live</span>
+          </div>
+          <div class="link-item">
+            <a href="https://apps.apple.com/ph/app/pinch-ai-chat-assistant/id6759166909">App Store — Pinch</a>
+            <span>iOS — live</span>
+          </div>
+          <div class="link-item">
+            <a href="https://nkli.net/nigiri">nkli.net/nigiri</a>
+            <span>NIGIRI — Unity GI plugin</span>
+          </div>
+          <div class="link-item">
+            <a href="https://www.autodesk.com/products/workshop-xr">Autodesk Workshop XR</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── RIGHT ── -->
+      <div class="col-right">
+
+        <p class="summary-text">
+          Architect-turned-engineer with <strong>10+ years</strong> building real-time 3D systems, AI-powered products, and developer tools. Founded a <strong>VR startup</strong> (raised $500K), shipped across <strong>Meta Quest, iOS, macOS, and Windows</strong>, and shipped <strong>an entire product — desktop app, AI assistant, MCP server, and website — in a single weekend</strong>. Currently a Principal Engineer on <strong>Autodesk Workshop XR</strong>; building AI-native developer tools and agent platforms on the side.
+        </p>
+
+        <div class="section">
+          <div class="section-label">Experience</div>
+
+          <div class="exp-item">
+            <div class="exp-header">
+              <div>
+                <div class="exp-role">Principal Software Engineer</div>
+                <div class="exp-company">Autodesk — Workshop XR</div>
+              </div>
+              <div class="exp-dates">Apr 2022 – Present</div>
+            </div>
+            <ul class="exp-bullets">
+              <li>Core team on <strong>Workshop XR</strong> — Autodesk's enterprise VR product for AEC design review, streaming complex BIM models from Autodesk Forma to Meta Quest in real time.</li>
+              <li>Designed and implemented a <strong>multi-level-of-detail (LOD) system with depth-based occlusion culling</strong>, overhauling the C++ / Unreal Engine rendering pipeline — enabling <strong>2–3× more geometry</strong> to render on Meta Quest hardware and significantly expanding the models customers can review in VR.</li>
+              <li>Product serves <strong>1,600+ MAU</strong> across enterprise AEC teams. Sets technical direction for the Core Team; highest PR contribution rate on the project across a 20-person squad.</li>
+              <li>Retained post-acquisition of The Wild; one of the original engineers on the product.</li>
+            </ul>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-header">
+              <div>
+                <div class="exp-role">Senior XR Engineer</div>
+                <div class="exp-company">The Wild <span style="color:var(--ink-faint);font-weight:400">(acq. Autodesk)</span></div>
+              </div>
+              <div class="exp-dates">Nov 2021 – Apr 2022</div>
+            </div>
+            <ul class="exp-bullets">
+              <li>Multi-user VR design review platform for AEC. Acquired by Autodesk April 2022.</li>
+            </ul>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-header">
+              <div>
+                <div class="exp-role">Founder &amp; Managing Director</div>
+                <div class="exp-company">Tenebris Lab</div>
+              </div>
+              <div class="exp-dates">Jan 2016 – Dec 2020</div>
+            </div>
+            <ul class="exp-bullets">
+              <li>Founded VR studio; built <strong>Lux Walker</strong> — multi-user architectural design review in VR (Unity, C#, Photon).</li>
+              <li>Raised <strong>$500K seed funding</strong> from SAOTA (largest architecture firm in Cape Town), who became founding partner and investor after piloting the product.</li>
+              <li>Led a team of 5 engineers through full product development and deployment.</li>
+            </ul>
+          </div>
+
+          <div class="exp-item trim">
+            <div class="exp-header">
+              <div>
+                <div class="exp-role">VR Course Instructor</div>
+                <div class="exp-company">iXperience</div>
+              </div>
+              <div class="exp-dates">2017 – 2018</div>
+            </div>
+            <ul class="exp-bullets">
+              <li>Designed and taught a 4-week intensive VR development course for US university students in Cape Town.</li>
+            </ul>
+          </div>
+
+          <div class="exp-item trim">
+            <div class="exp-header">
+              <div>
+                <div class="exp-role">Head of Visualisation</div>
+                <div class="exp-company">SAOTA Architects</div>
+              </div>
+              <div class="exp-dates">Jan 2015 – Jan 2016</div>
+            </div>
+            <ul class="exp-bullets">
+              <li>Led 3D visualisation and real-time walkthroughs at one of South Africa's most prominent architecture firms.</li>
+            </ul>
+          </div>
+
+          <div class="exp-item trim">
+            <div class="exp-header">
+              <div>
+                <div class="exp-role">Junior Architect</div>
+                <div class="exp-company">GMP Architekten — Berlin</div>
+              </div>
+              <div class="exp-dates">Jan 2010 – Jan 2012</div>
+            </div>
+            <ul class="exp-bullets">
+              <li>Design, rapid 3D prototyping, and architecture visualisation at one of Europe's largest architecture practices.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ PAGE 2 ═══════════════════════════════ -->
+  <div class="page" id="page2">
+    <div class="page2-header">
+      <div class="name-small">Gerard Slee</div>
+      <div class="continued">Independent Projects &amp; Open Source</div>
+    </div>
+
+    <div class="body-grid">
+      <div class="col-left">
+        <div class="section">
+          <div class="section-label">Highlights</div>
+          <ul class="skills-list">
+            <li>10+ years building real-time 3D systems and shipped products</li>
+            <li style="margin-top:2mm">Self-taught software engineer — architecture background</li>
+            <li style="margin-top:2mm">MCP server designed &amp; shipped in 2 days</li>
+            <li style="margin-top:2mm">$500K raised as first-time founder</li>
+            <li style="margin-top:2mm">3 live apps on the App Store</li>
+            <li style="margin-top:2mm">8.21% App Store conversion vs ~3% industry avg</li>
+            <li style="margin-top:2mm">Open source contributor — NIGIRI, Cairn</li>
+          </ul>
+        </div>
+
+        <div class="section" style="margin-top:4mm">
+          <div class="section-label">Recognition</div>
+          <ul class="skills-list">
+            <li><strong>Press</strong></li>
+            <li>Fast Company South Africa — Tenebris Lab, Feb 2018</li>
+            <li><strong>Speaking</strong></li>
+            <li>Autodesk University — XR for AEC workflows</li>
+            <li>Architecture &amp; design conferences — VR, digital design</li>
+            <li>SAOTA — VR in architecture industry demo</li>
+            <li><strong>Teaching</strong></li>
+            <li>iXperience Teacher Spotlight — VR 2018</li>
+          </ul>
+        </div>
+
+        <div class="section" style="margin-top:4mm">
+          <div class="section-label">Stack Snapshot</div>
+          <div class="tag-list">
+            <span class="tag">TypeScript</span>
+            <span class="tag">C++</span>
+            <span class="tag">C#</span>
+            <span class="tag">Swift</span>
+            <span class="tag">React</span>
+            <span class="tag">Next.js</span>
+            <span class="tag">Electron</span>
+            <span class="tag">Expo</span>
+            <span class="tag">Unreal 5</span>
+            <span class="tag">Unity</span>
+            <span class="tag">MCP</span>
+            <span class="tag">Vercel AI SDK</span>
+            <span class="tag">CoreML</span>
+            <span class="tag">Gemini</span>
+            <span class="tag">SQLite</span>
+            <span class="tag">Supabase</span>
+            <span class="tag">GitHub Actions</span>
+            <span class="tag">Jenkins</span>
+            <span class="tag">Zustand</span>
+            <span class="tag">D3</span>
+            <span class="tag">React Flow</span>
+            <span class="tag">CodeMirror 6</span>
+            <span class="tag">xterm.js</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-right">
+        <div class="section proj-section">
+          <div class="section-label">Independent Projects</div>
+
+          <div class="proj-item">
+            <div class="proj-name"><a href="https://github.com/ddutchie/cairn">Cairn</a></div>
+            <div class="proj-meta">Electron · Next.js · SQLite · MCP · Open Source · 2025</div>
+            <div class="proj-desc">Full product — desktop app (Electron + Next.js), AI assistant, MCP server, and marketing website — shipped from idea to public release in a single weekend. Agents read and write the same SQLite data layer as the human in real time. Features Kanban board, markdown notes, node canvas (Idea Flow), knowledge graph, live dashboards, and a built-in coding agent terminal. Used daily to manage multi-project agentic workflows.</div>
+          </div>
+
+          <div class="proj-item">
+            <div class="proj-name"><a href="https://archwiz.studio">ArchWiz Studio</a></div>
+            <div class="proj-meta">Electron · CoreML · Google Gemini · React Flow · macOS + Windows · 2025</div>
+            <div class="proj-desc">Professional AI visualisation tool for architects. Node-based Variation Canvas (React Flow) enables structured, branching image generation — users wire reference inputs (sketches, site photos, material samples) into a generation graph, producing parallel architectural variations. On-device CoreML upscaling (4x, UltraSharp/RealESRGAN) keeps renders private. Credit-based SaaS via Supabase.</div>
+          </div>
+
+          <div class="proj-item">
+            <div class="proj-name"><a href="https://apps.apple.com/ca/app/archwiz/id6757251966">ArchWiz iOS</a></div>
+            <div class="proj-meta">Expo · TypeScript · Google Gemini · CoreML · App Store · 2024</div>
+            <div class="proj-desc">AI architectural visualisation on mobile. Managed prompt engineering with image-type injections; users attach up to 6 references (sketch, site, 3D view, materials) and select from 14+ styles. MRR growing +2,100% MoM; <strong>8.21% App Store conversion rate</strong> vs ~3% industry average.</div>
+          </div>
+
+          <div class="proj-item">
+            <div class="proj-name"><a href="https://apps.apple.com/ph/app/pinch-ai-chat-assistant/id6759166909">Pinch</a></div>
+            <div class="proj-meta">Swift · SwiftUI · MCP · App Store · 2025 · Built in ~1 month</div>
+            <div class="proj-desc">Consumer AI assistant platform for iOS. Custom Service Builder agent (Claude Sonnet + structured output) takes user requirements, generates a working API endpoint with headers, tests and optimises the call in a loop, saves as a reusable service — no coding required. Soul Editor for custom AI personas. MCP server support built in.</div>
+          </div>
+
+          <div class="proj-item">
+            <div class="proj-name"><a href="https://nkli.net/nigiri">NIGIRI</a></div>
+            <div class="proj-meta">C# · HLSL · Unity · Open Source · 2020–2021</div>
+            <div class="proj-desc">Real-time global illumination plugin for Unity. Monte-Carlo cone tracing over sparse voxel octrees for diffuse, specular, and shadow lighting. Baked and real-time voxelisation, runtime streaming, multi-threading, volumetric lighting, VR single-pass stereo. Co-developed remotely with graphics researcher Abigail Hocking.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Read URL param on load
+    const params = new URLSearchParams(window.location.search);
+    const pParam = params.get('p');
+    setPages(pParam === '1' ? 1 : 2, true);
+
+    function setPages(n, silent) {
+      if (n === 1) {
+        document.body.classList.add('one-page');
+        document.getElementById('btn1').classList.add('active');
+        document.getElementById('btn2').classList.remove('active');
+      } else {
+        document.body.classList.remove('one-page');
+        document.getElementById('btn2').classList.add('active');
+        document.getElementById('btn1').classList.remove('active');
+      }
+      if (!silent) {
+        const u = new URL(window.location);
+        u.searchParams.set('p', n);
+        history.replaceState(null, '', u);
+      }
+    }
+  </script>
+</body>
+</html>
