@@ -277,6 +277,69 @@
     }
     .section-heading em { font-style: italic; color: var(--accent); }
 
+    /* ── As Seen In ──────────────────────────────────── */
+    #press {
+      background: var(--bg);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 2rem 4rem;
+    }
+    .press-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+    }
+    .press-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .press-divider {
+      width: 1px;
+      height: 2rem;
+      background: rgba(255,255,255,0.12);
+      flex-shrink: 0;
+    }
+    .press-items {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .press-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      text-decoration: none;
+      opacity: 0.55;
+      transition: opacity 0.2s;
+    }
+    .press-item:hover { opacity: 1; }
+    .press-item-name {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+    .press-item-detail {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      color: var(--ink-muted);
+    }
+    @media (max-width: 640px) {
+      #press { padding: 1.5rem 2rem; }
+      .press-inner { gap: 1.5rem; flex-wrap: wrap; }
+      .press-divider { display: none; }
+    }
+
     /* ── Featured Projects ───────────────────────────── */
     #projects { background: var(--bg-raised); }
 
@@ -778,6 +841,28 @@
           <div class="stat-num">8<em>%</em></div>
           <div class="stat-label">App Store conversion</div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- As Seen In -->
+  <section id="press">
+    <div class="press-inner">
+      <span class="press-label">As seen in</span>
+      <div class="press-divider"></div>
+      <div class="press-items">
+        <a class="press-item" href="https://www.autodesk.com/autodesk-university/class/Beyond-the-Blueprint-Exploring-XR-for-AEC-with-the-Autodesk-Workshop-XR-Team-2025" target="_blank" rel="noopener">
+          <span class="press-item-name">Autodesk University</span>
+          <span class="press-item-detail">Beyond the Blueprint · XR for AEC · 2025</span>
+        </a>
+        <a class="press-item" href="https://www.fastcompany.com" target="_blank" rel="noopener">
+          <span class="press-item-name">Fast Company</span>
+          <span class="press-item-detail">Tenebris Lab · South Africa · Feb 2018</span>
+        </a>
+        <a class="press-item" href="https://ixperience.co" target="_blank" rel="noopener">
+          <span class="press-item-name">iXperience</span>
+          <span class="press-item-detail">Teacher Spotlight · VR Course · 2017–2019</span>
+        </a>
       </div>
     </div>
   </section>
