@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cairn — Case Study · Gerard Slee</title>
+  <meta name="description" content="How and why I built Cairn — a local-first project management tool with a shared data layer for humans and AI agents. Architecture, decisions, and lessons.">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #1a1714;
+      --bg-raised: #1f1c18;
+      --bg-card:   #252018;
+      --border:    #332d24;
+      --ink:       #f5f0e8;
+      --muted:     #9a8f7e;
+      --faint:     #4d4438;
+      --accent:    #f59e0b;
+      --accent2:   #d97706;
+      --font-d:    'DM Serif Display', Georgia, serif;
+      --font-b:    'DM Sans', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Nav ─────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 4rem;
+      background: rgba(26,23,20,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(245,158,11,0.08);
+    }
+    .nav-logo {
+      font-family: var(--font-d);
+      font-size: 1.1rem;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .nav-logo em { font-style: italic; color: var(--accent); }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+      padding: 0.4rem 1rem;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .nav-cta:hover { background: var(--accent); color: var(--bg); }
+
+    /* ── Hero ────────────────────────────────────────── */
+    .hero {
+      padding: 10rem 4rem 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(245,158,11,0.03) 40px,
+        rgba(245,158,11,0.03) 41px
+      );
+      mask-image: radial-gradient(ellipse 70% 90% at 80% 40%, black 20%, transparent 75%);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0; right: -10%;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent); }
+    .back-link svg { width: 14px; height: 14px; }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px; height: 1px;
+      background: var(--accent);
+    }
+
+    .hero-title {
+      font-family: var(--font-d);
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title em { font-style: italic; color: var(--accent); }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.7;
+      max-width: 600px;
+      margin-bottom: 2.5rem;
+    }
+    .hero-subtitle strong { color: var(--ink); font-weight: 500; }
+
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
+    .meta-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .meta-value {
+      font-size: 0.88rem;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .meta-value a { color: var(--accent); }
+    .meta-value a:hover { text-decoration: underline; }
+
+    /* ── Stack tags ─────────────────────────────────── */
+    .tag-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+    .tag {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--bg-card);
+    }
+
+    /* ── Article body ────────────────────────────────── */
+    .article {
+      padding: 5rem 4rem;
+    }
+    .article-inner {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* Section headers */
+    .cs-section {
+      margin-bottom: 4rem;
+    }
+    .cs-section-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .cs-section-label::before {
+      content: '';
+      display: block;
+      width: 20px; height: 1px;
+      background: var(--accent);
+    }
+    .cs-section h2 {
+      font-family: var(--font-d);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .cs-section h2 em { font-style: italic; color: var(--accent); }
+
+    .cs-section h3 {
+      font-family: var(--font-b);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 2rem 0 0.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    .cs-section p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+    .cs-section p strong { color: var(--ink); font-weight: 600; }
+    .cs-section p em { color: var(--accent); font-style: italic; }
+
+    .cs-section ul, .cs-section ol {
+      margin: 0 0 1.25rem 1.25rem;
+    }
+    .cs-section li {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+    .cs-section li strong { color: var(--ink); font-weight: 600; }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.5rem;
+      margin: 2rem 0;
+      background: var(--bg-card);
+      border-radius: 0 6px 6px 0;
+    }
+    .pull-quote p {
+      font-family: var(--font-d);
+      font-size: 1.2rem;
+      line-height: 1.5;
+      color: var(--ink) !important;
+      font-style: italic;
+      margin: 0 !important;
+    }
+
+    /* Code block */
+    .code-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+    .code-block pre {
+      font-family: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: var(--muted);
+      white-space: pre;
+    }
+    .code-block pre .hl { color: var(--accent); }
+
+    /* Callout box */
+    .callout {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .callout-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .callout p { margin: 0 !important; }
+
+    /* Divider */
+    .cs-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 4rem 0;
+    }
+
+    /* Lesson cards */
+    .lessons-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .lesson-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+    }
+    .lesson-number {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .lesson-card h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+    .lesson-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin: 0 !important;
+    }
+    .lesson-card p strong { color: var(--ink); font-weight: 600; }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.78rem;
+      line-height: 1.8;
+      color: var(--muted);
+      overflow-x: auto;
+    }
+    .arch-diagram .hl { color: var(--ink); }
+    .arch-diagram .dim { color: var(--faint); }
+    .arch-diagram .acc { color: var(--accent); }
+
+    /* CTA footer */
+    .cs-footer {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .cs-footer-inner { max-width: 580px; margin: 0 auto; }
+    .cs-footer h2 {
+      font-family: var(--font-d);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .cs-footer h2 em { font-style: italic; color: var(--accent); }
+    .cs-footer p {
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+    .footer-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Screenshots */
+    .cs-screenshot {
+      margin: 2rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+    .cs-screenshot img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .cs-screenshot-caption {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 0.6rem 1rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    /* Hero screenshot — bleeds wider than the text column */
+    .hero-screenshot {
+      max-width: 960px;
+      margin: 3rem auto 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 64px rgba(0,0,0,0.6);
+    }
+    .hero-screenshot img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero, .article, .cs-footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .hero-screenshot { border-radius: 6px; margin-top: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="nav-logo">Gerard <em>Slee</em></a>
+    <ul class="nav-links">
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="resume.html" target="_blank">Resume</a></li>
+      <li><a href="mailto:ddutchie@gmail.com" class="nav-cta">Get in touch</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-inner">
+      <a href="index.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to portfolio
+      </a>
+      <div class="hero-eyebrow">Case Study</div>
+      <h1 class="hero-title">Building <em>Cairn</em></h1>
+      <p class="hero-subtitle">
+        A <strong>local-first project management tool</strong> designed from the ground up to be read and written by both humans and AI agents — simultaneously, in real time. From problem to public release in a single weekend.
+      </p>
+      <div class="hero-meta">
+        <div class="meta-item">
+          <span class="meta-label">Status</span>
+          <span class="meta-value">Open source · Public</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Built</span>
+          <span class="meta-value">April 2025 (one weekend)</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">GitHub</span>
+          <span class="meta-value"><a href="https://github.com/ddutchie/cairn" target="_blank">github.com/ddutchie/cairn</a></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Stack</span>
+          <div class="tag-row">
+            <span class="tag">Electron</span>
+            <span class="tag">Next.js</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">SQLite</span>
+            <span class="tag">MCP</span>
+            <span class="tag">React Flow</span>
+            <span class="tag">node-pty</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero screenshot — full app overview -->
+    <div class="hero-screenshot">
+      <img src="content/cairn-hero.png" alt="Cairn desktop app — full overview" loading="lazy">
+    </div>
+  </header>
+
+  <!-- Article -->
+  <main class="article">
+    <div class="article-inner">
+
+      <!-- The Problem -->
+      <section class="cs-section">
+        <div class="cs-section-label">The Problem</div>
+        <h2>Context collapse at <em>session boundaries</em></h2>
+        <p>
+          I've been using AI coding agents daily since late 2024. The productivity gains are real — but so is a failure mode that doesn't get talked about enough: <strong>every new agent session starts from zero.</strong>
+        </p>
+        <p>
+          The agent has no memory of what was decided in the previous session. No record of what was abandoned and why. No access to the planning notes sitting in a separate tool. You spend the first fifteen minutes of every session re-briefing an agent that should already know the situation. Then it does the work. Then the session ends, and everything it learned disappears.
+        </p>
+        <p>
+          I tried to solve this with plain markdown files — dropping <code>PLANNING.md</code> and <code>CONTEXT.md</code> into project folders and pointing agents at them. It worked, partially. But it was manual, unstructured, and had no task layer. No way to drive agent work from a board. No cross-project visibility. No audit trail. I knew what the agent <em>said</em> it had done. I had no way to verify it.
+        </p>
+        <p>
+          I tried Obsidian with an MCP plugin — closer to the right idea, but with two hard blockers: Obsidian had to be open and running for the MCP server to work, and there was still no task tracking layer. Notes without tasks meant no way to close the loop between planning and execution.
+        </p>
+
+        <div class="pull-quote">
+          <p>The problem wasn't the agent's capability — it was the infrastructure around it. The gap was the tool, not the model.</p>
+        </div>
+
+        <p>
+          What I needed was something that didn't exist: a project management tool designed from the ground up to be read and written by both humans and AI agents, simultaneously, in real time.
+        </p>
+      </section>
+
+      <!-- The Signal -->
+      <section class="cs-section">
+        <div class="cs-section-label">Validation</div>
+        <h2>The signal that this <em>isn't just me</em></h2>
+        <p>
+          At work, engineers had organically started leaving more and more <code>.md</code> files in the codebase — <code>FEAT_PLAN_XXX.md</code>, <code>CONTEXT.md</code>, <code>OPEN_QUESTIONS.md</code>. No mandate. No process. They were doing it because their agent sessions worked better when the context was already there.
+        </p>
+        <p>
+          That's a reliable signal. <strong>When developers converge on the same workaround without coordinating, it's not a preference — it's a gap in the ecosystem.</strong> Cairn is the formalised version of what people are already doing by hand.
+        </p>
+      </section>
+
+      <hr class="cs-divider">
+
+      <!-- The Build -->
+      <section class="cs-section">
+        <div class="cs-section-label">The Build</div>
+        <h2>One weekend. A <em>recursive</em> feedback loop.</h2>
+        <p>
+          The problem surfaced on a Friday. I wanted to fix it that weekend.
+        </p>
+        <p>
+          What made a weekend build feasible wasn't just time — it was that <strong>the agent developing Cairn had MCP access to Cairn from the start.</strong> As soon as the MCP server was functional (which was early, because everything else depended on it), development velocity compounded. The agent building the app could see the project state it was building in real time. It could read the planning notes, update task cards as features were completed, and move to the next ticket without being re-briefed.
+        </p>
+        <p>
+          The clearest example: building the marketing website. I created design language docs, a feature overview, and a sitemap as notes inside a Cairn project. Then I opened a second project for the website and told the agent: <em>"build a site from the notes in Cairn."</em> It did — in one session.
+        </p>
+
+        <div class="callout">
+          <div class="callout-label">Shipped v1</div>
+          <p>Desktop app · AI assistant · MCP server · Marketing website · All in one weekend.</p>
+        </div>
+
+        <p>
+          One thing was cut to hit Sunday: a plugin system for third-party integrations. Everything else shipped.
+        </p>
+      </section>
+
+      <hr class="cs-divider">
+
+      <!-- Architecture -->
+      <section class="cs-section">
+        <div class="cs-section-label">Architecture</div>
+        <h2>The shared <em>data layer</em></h2>
+
+        <p>
+          The central architectural bet is that <strong>the human and the agent use the same data layer, simultaneously, in real time.</strong> There is no separate "agent context" synced periodically to a human-visible store. When an agent creates a task card, it appears on the kanban board immediately. When a human edits a note, the agent's next read sees the edit. Same SQLite database. Same <code>.md</code> files on disk.
+        </p>
+        <p>
+          This sounds simple. It caused the most interesting engineering problems in the project.
+        </p>
+
+        <h3>SQLite in WAL Mode</h3>
+        <p>
+          SQLite in Write-Ahead Logging mode is the foundation. WAL allows multiple processes to read and write the same database file concurrently without locking — which is exactly what's needed when the Electron app and the standalone MCP server binary are both active. The synchronous <code>better-sqlite3</code> driver keeps reads instant — no async overhead, no loading states, no round-trips.
+        </p>
+        <p>
+          Notes live in two places simultaneously: as rows in SQLite (for structured queries, tagging, linking, and full-text search via a stripped <code>content_text</code> column) and as <code>.md</code> files on disk (for portability, external editor access, and git compatibility). The filesystem is not a cache — it's a first-class citizen.
+        </p>
+
+        <h3>Multi-Process Architecture</h3>
+        <div class="arch-diagram">
+<span class="hl">Electron Main Process</span>  <span class="dim">—</span> SQLite, file I/O, PTY sessions, AI chat loop, system tray
+  <span class="acc">↕</span> contextBridge  <span class="dim">(whitelist-only typed API)</span>
+<span class="hl">Renderer Process</span>  <span class="dim">—</span> Next.js / React UI, Zustand state, no direct DB or FS access
+  <span class="acc">↕</span> WAL mtime polling  <span class="dim">(1 second interval)</span>
+<span class="hl">MCP Server Process</span>  <span class="dim">—</span> standalone binary, AI agents connect via stdio</div>
+        <p>
+          The renderer never touches the database or filesystem directly. All writes go through the contextBridge to the main process. External writes from the MCP server arrive via WAL polling — the renderer detects a changed <code>cairn.db-wal</code> mtime, fires <code>db:changed</code>, and re-hydrates state from Electron.
+        </p>
+
+        <h3>Why Electron + Next.js</h3>
+        <p>
+          A browser app was ruled out early. The hard requirements — native SQLite bindings, arbitrary filesystem access, PTY sessions for agent terminals, background file watching, PDF export — are not achievable in a browser sandbox. A native Swift app was ruled out because the UI surface (React Flow canvas, CodeMirror editor, xterm.js terminal, D3 knowledge graph) would have been enormous to reimplement natively, and Swift is macOS-only. Electron gives macOS, Windows, and Linux from one codebase.
+        </p>
+        <p>
+          Next.js with App Router and <code>output: 'export'</code> produces a static bundle that Electron loads via a custom <code>app://</code> protocol. No SSR, no server routes — equivalent to Vite output, but with React 19 ergonomics and room for server features if the product ever moves online.
+        </p>
+
+        <h3>The MCP Server</h3>
+        <p>
+          The MCP server is a standalone binary — packaged from a single <code>mcp-server.ts</code> entry point with no Electron dependency. When an agent runtime (Claude Desktop, OpenCode, Aider) starts a session, it spawns the binary via stdio transport. The binary opens <code>cairn.db</code> directly and registers 37 tools spanning full CRUD over notes, tasks, projects, tags, idea flow, dashboards, and the knowledge graph.
+        </p>
+        <p>
+          The in-app AI chat exposes the same tool set. Ask it "what tasks are in progress?" and it reads the board directly and responds — no copy-pasting, no context window management. The same tools available to external MCP agents are available directly in the interface.
+        </p>
+        <p>
+          The decision to build an MCP server rather than a REST API came down to three things: <strong>ecosystem fit</strong> (MCP is what modern agent runtimes already speak natively — no custom client needed), <strong>schema reuse</strong> (all 42 tool schemas live in one Zod file, consumed by both the in-app chat and the MCP server), and <strong>process lifecycle</strong> (the stdio transport means the agent runtime owns the MCP process — zero configuration, no long-running daemon).
+        </p>
+        <p>
+          Five tools were kept in-app only: anything requiring live Electron renderer state, recursive LLM calls, or renderer-rendered UI. The design principle: if it can't be meaningfully executed in a headless stdio process, it doesn't belong in MCP.
+        </p>
+
+        <!-- Screenshot: agent terminal with MCP active -->
+        <div class="cs-screenshot">
+          <img src="content/cairn-agent.png" alt="Cairn built-in agent terminal with MCP server active" loading="lazy">
+          <div class="cs-screenshot-caption">The built-in AI chat — asked what tasks are in progress, it reads the board directly and responds. The same tool set available to external MCP agents is available in-app.</div>
+        </div>
+      </section>
+
+      <hr class="cs-divider">
+
+      <!-- What Went Wrong -->
+      <section class="cs-section">
+        <div class="cs-section-label">Key Decisions</div>
+        <h2>What went wrong <em>first</em></h2>
+
+        <p>
+          The file watcher caused duplicate and lost notes.
+        </p>
+        <p>
+          The dual-write architecture — SQLite and <code>.md</code> files simultaneously — created an echo-loop: when the app wrote a note to disk, <code>chokidar</code> fired. If nothing suppressed that event, the watcher re-imported the file it just wrote, collided with the existing database row, and threw a UNIQUE constraint error. Notes appeared to disappear or duplicate.
+        </p>
+        <p>
+          The fix has two parts. <strong><code>suppressNextChange(noteId)</code></strong> arms a 2-second suppress window per note ID before every own write — any chokidar event for that note within the window is silently dropped. <strong><code>ownWriteGuard</code></strong> is a global 3-second timestamp in the renderer's IPC store; when a <code>db:changed</code> event arrives, the renderer checks whether the last own write was within 3 seconds and skips re-hydration if so.
+        </p>
+        <p>
+          These mechanisms solve the echo-loop — the most common failure mode. What they don't solve is true simultaneous edits: if both a human and an agent write the same note within ~300ms, the last SQLite write wins and the other's changes are silently lost. No merge, no conflict flag. A deliberate MVP trade-off; the right solution in v2 is CRDT-based conflict resolution.
+        </p>
+
+        <h3>The biggest decision I'd redo</h3>
+        <p>
+          Starting with a DB-only layer and migrating to the hybrid architecture midway through. The original design stored everything in SQLite alone. The decision to also write notes as <code>.md</code> files — for portability, readability, and external editor access — came partway through the build. That mid-build migration is what surfaced the file watcher race conditions and required rebuilding the entire note write path.
+        </p>
+        <p>
+          <strong>The architecture that exists today is correct. It just wasn't the starting point.</strong> Starting with the hybrid layer from day one would have avoided a painful and disruptive rework.
+        </p>
+      </section>
+
+      <hr class="cs-divider">
+
+      <!-- What Shipped -->
+      <section class="cs-section">
+        <div class="cs-section-label">What Shipped</div>
+        <h2>A fully functional <em>desktop app</em></h2>
+
+        <ul>
+          <li><strong>Kanban board</strong> — with dependency tracking, blocking relationships, priority, and due dates</li>
+          <li><strong>Markdown notes</strong> — CodeMirror 6 editor, wikilinks, frontmatter, folder organisation, full-text search</li>
+          <li><strong>Idea Flow</strong> — a node canvas (React Flow) where notes, tasks, URLs, and AI summaries connect and auto-arrange via Dagre</li>
+          <li><strong>Knowledge Graph</strong> — a D3 force graph of auto-discovered relationships across the entire workspace</li>
+          <li><strong>Live dashboards</strong> — sandboxed HTML panels with a <code>window.cairn.query()</code> API for live data reads</li>
+          <li><strong>Built-in agent terminal</strong> — launches Claude Code, OpenCode, Aider, or any CLI with task context pre-filled from board cards</li>
+          <li><strong>MCP server</strong> — 37 tools for full CRUD over the entire workspace, exposed to any MCP-compatible agent runtime</li>
+          <li><strong>Marketing website</strong> — designed and built inside Cairn, by an agent connected to Cairn</li>
+        </ul>
+
+        <!-- Screenshot: Kanban board -->
+        <div class="cs-screenshot">
+          <img src="content/cairn-board.png" alt="Cairn kanban board" loading="lazy">
+          <div class="cs-screenshot-caption">Kanban board — tasks move between columns as the agent works. Both human and agent see the same state in real time.</div>
+        </div>
+
+        <!-- Screenshot: Idea Flow -->
+        <div class="cs-screenshot">
+          <img src="content/cairn-flow.png" alt="Cairn Idea Flow node canvas" loading="lazy">
+          <div class="cs-screenshot-caption">Idea Flow — a node canvas where notes, tasks, and URLs connect into a visual map of the project. Agents can read, write, and auto-arrange it via MCP.</div>
+        </div>
+
+        <!-- Screenshot: Knowledge Graph -->
+        <div class="cs-screenshot">
+          <img src="content/cairn-graph.png" alt="Cairn Knowledge Graph" loading="lazy">
+          <div class="cs-screenshot-caption">Knowledge Graph — auto-discovered relationships across the entire workspace, rendered as a D3 force graph.</div>
+        </div>
+      </section>
+
+      <hr class="cs-divider">
+
+      <!-- Lessons -->
+      <section class="cs-section">
+        <div class="cs-section-label">Lessons</div>
+        <h2>What I <em>learned</em></h2>
+
+        <div class="lessons-grid">
+          <div class="lesson-card">
+            <div class="lesson-number">01</div>
+            <h4>Context is the real bottleneck, not capability</h4>
+            <p>A smaller model with full project context consistently outperforms a larger model starting cold. The quality ceiling of any agent session is set by the quality and accessibility of the context it can read — <strong>not the model.</strong> Investing in context infrastructure returns more than investing in a better model.</p>
+          </div>
+          <div class="lesson-card">
+            <div class="lesson-number">02</div>
+            <h4>MCP is stateless by design — compensate with tool design</h4>
+            <p>Every MCP tool call is independent. No session, no shared memory between calls, no handoff between agents. Cairn's answer: <strong><code>get_project_context_pack</code></strong> bundles metadata, open tasks, pinned notes, and recent activity into a single call. <code>list_recent_activity</code> gives any fresh agent a structured history of what was done. The protocol's statelessness is real, but it can be papered over with deliberately designed tools.</p>
+          </div>
+          <div class="lesson-card">
+            <div class="lesson-number">03</div>
+            <h4>The file watcher and the database are one system</h4>
+            <p>Treating them as independent layers and bolting them together later is how you get UNIQUE constraint errors and ghost notes. <strong>Any architecture that writes to both disk and a database needs the suppress mechanism designed in from day one</strong> — not retrofitted after the first cascade of bugs.</p>
+          </div>
+        </div>
+      </section>
+
+      <hr class="cs-divider">
+
+      <!-- What's Next -->
+      <section class="cs-section">
+        <div class="cs-section-label">What's Next</div>
+        <h2>v2: the board <em>triggers</em> the agent</h2>
+        <p>
+          The v2 vision: moving a task card to <em>Todo</em> kicks off an agent automatically. The agent reads the card's title, description, and linked notes; picks up the task history from recent activity; does the work; moves the card to <em>Done</em>; creates follow-up tasks for anything it discovers along the way; and writes a note documenting what it did and what decisions it made.
+        </p>
+        <p>
+          The output isn't just code — it's a structured record. After the session, you can read exactly what happened, why, and what comes next. <strong>The kanban board becomes the interface between human intent and agent execution,</strong> with full auditability in both directions.
+        </p>
+        <p>
+          Cairn v1 is the infrastructure. v2 is where it becomes autonomous.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer CTA -->
+  <footer class="cs-footer">
+    <div class="cs-footer-inner">
+      <h2>See the <em>code</em></h2>
+      <p>Cairn is open source. The full codebase, MCP server, and marketing site are all public on GitHub.</p>
+      <div class="footer-actions">
+        <a href="https://github.com/ddutchie/cairn" target="_blank" class="btn-primary">View on GitHub</a>
+        <a href="index.html" class="btn-secondary">Back to portfolio</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
