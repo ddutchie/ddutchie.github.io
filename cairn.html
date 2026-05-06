@@ -486,6 +486,234 @@
       height: auto;
     }
 
+    /* ── Live stats bar ──────────────────────────────── */
+    .live-stats {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 0.75rem 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      flex-wrap: wrap;
+    }
+    .live-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .live-stat svg { width: 13px; height: 13px; flex-shrink: 0; opacity: 0.7; }
+    .live-stat-val {
+      font-weight: 600;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+    .live-stat-sep {
+      width: 1px; height: 14px;
+      background: var(--border);
+    }
+    .live-stats-link {
+      margin-left: auto;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: color 0.15s;
+    }
+    .live-stats-link:hover { color: var(--accent); }
+    .live-stats-link svg { width: 11px; height: 11px; }
+
+    /* ── Changelog ───────────────────────────────────── */
+    .changelog-section {
+      margin-bottom: 4rem;
+    }
+    .changelog-list {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .cl-release {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .cl-release.is-latest {
+      border-color: rgba(245,158,11,0.3);
+    }
+    .cl-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem 1.25rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .cl-header:hover { background: rgba(255,255,255,0.03); }
+    .cl-tag {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.2);
+      padding: 0.15rem 0.55rem;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .cl-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink);
+      flex: 1;
+    }
+    .cl-date {
+      font-size: 0.72rem;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .cl-chevron {
+      width: 14px; height: 14px;
+      color: var(--muted);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .cl-release.open .cl-chevron { transform: rotate(180deg); }
+    .cl-body {
+      display: none;
+      padding: 0 1.25rem 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+    .cl-release.open .cl-body { display: block; }
+    /* rendered markdown inside release body */
+    .cl-body h2 { display: none; } /* version heading already shown in header */
+    .cl-body h3 {
+      /* category labels: "Bug fixes", "What's new", "Improvements" */
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 1.25rem 0 0.5rem;
+    }
+    .cl-body h4 {
+      /* individual fix/feature titles */
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0.75rem 0 0.35rem;
+      letter-spacing: -0.01em;
+    }
+    .cl-body p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 0.5rem;
+    }
+    .cl-body ul {
+      margin: 0.25rem 0 0.75rem 1.1rem;
+    }
+    .cl-body li {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 0.2rem;
+    }
+    .cl-body strong { color: var(--ink); font-weight: 600; }
+    .cl-body code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.78rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+      color: var(--accent);
+    }
+    .cl-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .cl-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0;
+      font-size: 0.8rem;
+    }
+    .cl-table th {
+      text-align: left;
+      padding: 0.4rem 0.75rem;
+      font-weight: 600;
+      color: var(--ink);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .cl-table td {
+      padding: 0.4rem 0.75rem;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .cl-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .cl-code-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 0.75rem 1rem;
+      margin: 0.75rem 0;
+      overflow-x: auto;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.76rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+    .cl-code-block code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
+    .cl-gh-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .cl-gh-link:hover { color: var(--accent); }
+    .cl-show-more {
+      margin-top: 0.75rem;
+      width: 100%;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.6rem 1rem;
+      font-family: var(--font-b);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cl-show-more:hover { border-color: var(--accent); color: var(--accent); }
+    .cl-loading {
+      font-size: 0.85rem;
+      color: var(--muted);
+      padding: 1rem 0;
+    }
+    .cl-error {
+      font-size: 0.85rem;
+      color: var(--muted);
+      padding: 0.5rem 0;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       nav { padding: 1rem 1.5rem; }
@@ -551,6 +779,31 @@
     <!-- Hero screenshot — full app overview -->
     <div class="hero-screenshot">
       <img src="content/cairn-hero.png" alt="Cairn desktop app — full overview" loading="lazy">
+    </div>
+
+    <!-- Live stats bar -->
+    <div class="live-stats" id="live-stats" style="opacity:0;transition:opacity 0.3s;">
+      <div class="live-stat">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>
+        <span id="stat-stars" class="live-stat-val">—</span>
+        <span>stars</span>
+      </div>
+      <div class="live-stat-sep"></div>
+      <div class="live-stat">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm1.96-5.53 2.54 2.54V1.75a.75.75 0 0 1 1.5 0v9.26l2.54-2.54a.749.749 0 1 1 1.06 1.06l-3.82 3.82a.749.749 0 0 1-1.06 0L3.65 9.53a.749.749 0 1 1 1.06-1.06Z"/></svg>
+        <span id="stat-downloads" class="live-stat-val">—</span>
+        <span>downloads</span>
+      </div>
+      <div class="live-stat-sep"></div>
+      <div class="live-stat">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75ZM1.75 12h12.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Z"/></svg>
+        <span id="stat-releases" class="live-stat-val">—</span>
+        <span>releases</span>
+      </div>
+      <a href="https://github.com/ddutchie/cairn" target="_blank" class="live-stats-link">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        github.com/ddutchie/cairn
+      </a>
     </div>
   </header>
 
@@ -793,6 +1046,18 @@
         </p>
       </section>
 
+      <hr class="cs-divider">
+
+      <!-- Changelog -->
+      <section class="cs-section changelog-section">
+        <div class="cs-section-label">Changelog</div>
+        <h2>Release <em>history</em></h2>
+        <p>Live from GitHub — updated with every release.</p>
+        <div class="changelog-list" id="changelog-list">
+          <div class="cl-loading">Loading releases…</div>
+        </div>
+      </section>
+
     </div>
   </main>
 
@@ -808,5 +1073,210 @@
     </div>
   </footer>
 
+  <script>
+    // Markdown → HTML (handles headings, bold, inline code, fenced code blocks, tables, lists, links)
+    function mdToHtml(md) {
+      if (!md) return '';
+
+      const out = [];
+      const lines = md.split('\n');
+      let i = 0;
+
+      function inlineEscape(s) {
+        return s
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      function inlineFormat(s) {
+        return inlineEscape(s)
+          .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g, '<em>$1</em>')
+          .replace(/`([^`]+)`/g, '<code>$1</code>')
+          .replace(/\[([^\]]+)\]\((https?[^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+      }
+
+      function isTableSep(line) { return /^\|?[\s\-:|]+\|/.test(line); }
+      function isTableRow(line) { return line.trim().startsWith('|') || (line.includes('|') && !line.trim().startsWith('#')); }
+
+      while (i < lines.length) {
+        const line = lines[i];
+        const trimmed = line.trim();
+
+        // Fenced code block
+        if (trimmed.startsWith('```')) {
+          const lang = trimmed.slice(3).trim();
+          const codeLines = [];
+          i++;
+          while (i < lines.length && !lines[i].trim().startsWith('```')) {
+            codeLines.push(inlineEscape(lines[i]));
+            i++;
+          }
+          out.push(`<pre class="cl-code-block"${lang ? ` data-lang="${lang}"` : ''}><code>${codeLines.join('\n')}</code></pre>`);
+          i++; continue;
+        }
+
+        // Headings — map GitHub release note conventions:
+        // # (version title) → h2 (hidden via CSS)
+        // ## (category: "Bug fixes", "What's new") → h3 (accent label style)
+        // ### (individual item title) → h4 (bold item style)
+        // #### → h4
+        const hm = trimmed.match(/^(#{1,4})\s+(.+)$/);
+        if (hm) {
+          const depth = hm[1].length;
+          const level = depth === 1 ? 2 : depth === 2 ? 3 : 4;
+          out.push(`<h${level}>${inlineFormat(hm[2])}</h${level}>`);
+          i++; continue;
+        }
+
+        // Table: look ahead for separator row
+        if (isTableRow(trimmed) && i + 1 < lines.length && isTableSep(lines[i + 1])) {
+          const headers = trimmed.split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1 || (arr[0] !== '' && idx === 0) || (arr[arr.length-1] !== '' && idx === arr.length-1)).map(h => h.trim()).filter(Boolean);
+          i += 2; // skip header + separator
+          const rows = [];
+          while (i < lines.length && isTableRow(lines[i].trim())) {
+            const cells = lines[i].split('|').map(c => c.trim()).filter((_, idx, arr) => !(idx === 0 && arr[0] === '') && !(idx === arr.length - 1 && arr[arr.length-1] === ''));
+            rows.push(cells);
+            i++;
+          }
+          let table = '<table class="cl-table"><thead><tr>';
+          headers.forEach(h => { table += `<th>${inlineFormat(h)}</th>`; });
+          table += '</tr></thead><tbody>';
+          rows.forEach(row => {
+            table += '<tr>';
+            row.forEach(cell => { table += `<td>${inlineFormat(cell)}</td>`; });
+            table += '</tr>';
+          });
+          table += '</tbody></table>';
+          out.push(table);
+          continue;
+        }
+
+        // Unordered list
+        if (/^[-*] /.test(trimmed)) {
+          const items = [];
+          while (i < lines.length && /^[-*] /.test(lines[i].trim())) {
+            items.push(`<li>${inlineFormat(lines[i].trim().slice(2))}</li>`);
+            i++;
+          }
+          out.push('<ul>' + items.join('') + '</ul>');
+          continue;
+        }
+
+        // Blank line
+        if (!trimmed) { i++; continue; }
+
+        // Paragraph
+        const paraLines = [];
+        while (i < lines.length && lines[i].trim() && !/^(#{1,4} |```|[-*] |\|)/.test(lines[i].trim())) {
+          paraLines.push(inlineFormat(lines[i].trim()));
+          i++;
+        }
+        if (paraLines.length) out.push('<p>' + paraLines.join(' ') + '</p>');
+      }
+
+      return out.join('\n');
+    }
+
+    function formatDate(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function buildRelease(release, index) {
+      const isLatest = index === 0;
+      const div = document.createElement('div');
+      div.className = 'cl-release' + (isLatest ? ' is-latest open' : '');
+
+      // Strip "Cairn vX.Y.Z" — keep only any trailing suffix like "- FIXED"
+      const suffix = release.name.replace(/^Cairn\s+v[\d.]+\s*/i, '').trim();
+
+      div.innerHTML = `
+        <div class="cl-header">
+          <span class="cl-tag">${release.tag_name}</span>
+          <span class="cl-name">Cairn${suffix ? ' <span style="color:var(--muted);font-weight:400">' + suffix + '</span>' : ''}</span>
+          <span class="cl-date">${formatDate(release.published_at)}</span>
+          <svg class="cl-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+        <div class="cl-body">
+          ${mdToHtml(release.body)}
+          <a class="cl-gh-link" href="${release.html_url}" target="_blank">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            View on GitHub
+          </a>
+        </div>`;
+
+      div.querySelector('.cl-header').addEventListener('click', () => {
+        div.classList.toggle('open');
+      });
+
+      return div;
+    }
+
+    // Real installer extensions — exclude .yml and .blockmap (auto-updater metadata)
+    function isInstaller(filename) {
+      return /\.(zip|dmg|exe|AppImage|deb|rpm|pkg)$/i.test(filename);
+    }
+
+    async function loadGitHubData() {
+      const container = document.getElementById('changelog-list');
+      const statsBar  = document.getElementById('live-stats');
+
+      try {
+        // Fetch repo info and releases in parallel
+        const [repoRes, releasesRes] = await Promise.all([
+          fetch('https://api.github.com/repos/ddutchie/cairn'),
+          fetch('https://api.github.com/repos/ddutchie/cairn/releases?per_page=20')
+        ]);
+        if (!repoRes.ok || !releasesRes.ok) throw new Error('GitHub API error');
+
+        const [repo, releases] = await Promise.all([repoRes.json(), releasesRes.json()]);
+
+        // ── Stats bar ────────────────────────────────────────
+        const totalDownloads = releases.reduce((sum, r) =>
+          sum + r.assets.filter(a => isInstaller(a.name))
+                        .reduce((s, a) => s + a.download_count, 0), 0);
+
+        document.getElementById('stat-stars').textContent     = repo.stargazers_count.toLocaleString();
+        document.getElementById('stat-downloads').textContent = totalDownloads.toLocaleString();
+        document.getElementById('stat-releases').textContent  = releases.length.toLocaleString();
+        statsBar.style.opacity = '1';
+
+        // ── Changelog ────────────────────────────────────────
+        if (!releases.length) { container.innerHTML = '<div class="cl-error">No releases found.</div>'; return; }
+
+        container.innerHTML = '';
+
+        const INITIAL_SHOW = 3;
+        const visibleReleases = releases.slice(0, INITIAL_SHOW);
+        const hiddenReleases  = releases.slice(INITIAL_SHOW);
+
+        visibleReleases.forEach((r, i) => container.appendChild(buildRelease(r, i)));
+
+        if (hiddenReleases.length) {
+          const hiddenWrap = document.createElement('div');
+          hiddenWrap.id = 'cl-hidden';
+          hiddenWrap.style.display = 'none';
+          hiddenReleases.forEach((r, i) => hiddenWrap.appendChild(buildRelease(r, i + INITIAL_SHOW)));
+          container.appendChild(hiddenWrap);
+
+          const btn = document.createElement('button');
+          btn.className = 'cl-show-more';
+          btn.textContent = `Show ${hiddenReleases.length} older releases`;
+          btn.addEventListener('click', () => {
+            hiddenWrap.style.display = 'flex';
+            hiddenWrap.style.flexDirection = 'column';
+            hiddenWrap.style.gap = '0.75rem';
+            btn.remove();
+          });
+          container.appendChild(btn);
+        }
+      } catch (e) {
+        container.innerHTML = `<div class="cl-error">Couldn't load releases — <a href="https://github.com/ddutchie/cairn/releases" target="_blank" style="color:var(--accent)">view on GitHub</a>.</div>`;
+      }
+    }
+
+    loadGitHubData();
+  </script>
 </body>
 </html>
